@@ -1,0 +1,6 @@
+# Agent runs LOCALLY — never bundled into Lambda.
+# These deps are heavy (~500MB with crewai) and must stay out of api/ and mcp/.
+jhcontext>=0.2.0
+httpx>=0.27
+crewai>=1.9
+crewai-tools>=1.9

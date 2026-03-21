@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+output/
+api/.chalice/deployed/
+api/.chalice/deployments/
+mcp/.chalice/deployed/
+mcp/.chalice/deployments/
+.pytest_cache/

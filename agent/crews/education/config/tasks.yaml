@@ -1,0 +1,58 @@
+ingestion_task:
+  description: >
+    Receive essay submission from student {student_id}.
+    Separate: (a) essay text content ({essay_topic}, {word_count} words),
+    (b) identity data (name, student ID, demographic attributes).
+    Create a structured output with essay text as the primary
+    artifact and identity data clearly marked as separate.
+    The essay text output must contain ZERO identity references.
+  expected_output: >
+    Two clearly separated outputs: (1) anonymized essay text
+    content with word count and topic metadata, (2) identity
+    data package marked as access-controlled. Both with
+    content hashes.
+  agent: ingestion_agent
+
+grading_task:
+  description: >
+    Consume ONLY the essay text artifact. Evaluate against rubric:
+    argument quality (30%), evidence use (30%), writing clarity
+    (20%), critical thinking (20%). Produce a grade with
+    confidence score. Your decision_influence must reference
+    ONLY content-based categories — never identity attributes.
+  expected_output: >
+    Grading report with: overall grade (letter + numeric),
+    confidence score, per-criterion scores, justification text,
+    and decision_influence metadata listing only content-based
+    categories (argument_quality, evidence_use, writing_clarity,
+    critical_thinking).
+  agent: grading_agent
+
+equity_task:
+  description: >
+    In a SEPARATE workflow: consume aggregate identity metadata
+    for institutional reporting. Produce grade distribution
+    statistics by demographic group. This output must have
+    NO connection to individual grading decisions.
+  expected_output: >
+    Aggregate equity report with grade distribution by
+    demographic group, statistical significance tests, and
+    institutional recommendations. No individual student
+    identifiers or grades linked to identities.
+  agent: equity_agent
+
+audit_task:
+  description: >
+    Verify negative proof: identity artifacts must be absent
+    from the grading PROV dependency chain. Verify isolation:
+    equity reporting workflow must have no shared artifacts
+    with grading workflow. Check for implicit proxies
+    (writing style, vocabulary patterns that could correlate
+    with demographics). Produce structured audit report.
+  expected_output: >
+    Audit report with: (1) negative proof verification
+    (PASS/FAIL — identity absent from grading chain),
+    (2) workflow isolation verification (PASS/FAIL — zero
+    shared artifacts), (3) implicit proxy risk assessment,
+    (4) overall Article 13 compliance status.
+  agent: audit_agent

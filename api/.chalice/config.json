@@ -1,0 +1,19 @@
+{
+  "version": "2.0",
+  "app_name": "jhcontext-api",
+  "stages": {
+    "dev": {
+      "api_gateway_stage": "api",
+      "lambda_memory_size": 256,
+      "lambda_timeout": 30,
+      "environment_variables": {
+        "DYNAMODB_ENVELOPES_TABLE": "jhcontext-envelopes",
+        "DYNAMODB_ARTIFACTS_TABLE": "jhcontext-artifacts",
+        "DYNAMODB_PROV_TABLE": "jhcontext-prov-graphs",
+        "DYNAMODB_DECISIONS_TABLE": "jhcontext-decisions",
+        "S3_ARTIFACTS_BUCKET": "jhcontext-artifacts-dev",
+        "JHCONTEXT_VERSION": "0.2.0"
+      }
+    }
+  }
+}
