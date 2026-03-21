@@ -21,6 +21,7 @@ from jhcontext import (
     compute_sha256,
 )
 from jhcontext.client.api_client import JHContextClient
+from jhcontext.pii import InMemoryPIIVault
 
 API_URL = os.environ.get("JHCONTEXT_API_URL", "http://localhost:8400")
 LARGE_ARTIFACT_THRESHOLD = 100_000  # 100KB
@@ -43,13 +44,25 @@ class ContextMixin:
         producer: str,
         risk_level: RiskLevel = RiskLevel.HIGH,
         human_oversight: bool = True,
+        feature_suppression: list[str] | None = None,
     ) -> str:
-        """Call in @start() — creates initial envelope + PROV."""
+        """Call in @start() — creates initial envelope + PROV.
+
+        If *feature_suppression* is provided, PII detachment is automatically
+        enabled — specified fields in the semantic payload will be tokenized
+        before signing and persistence.
+        """
         builder = EnvelopeBuilder()
         builder.set_producer(producer)
         builder.set_scope(scope)
         builder.set_risk_level(risk_level)
         builder.set_human_oversight(human_oversight)
+
+        # PII detachment setup
+        pii_vault = InMemoryPIIVault()
+        if feature_suppression:
+            builder.set_privacy(feature_suppression=feature_suppression)
+            builder.enable_pii_detachment(vault=pii_vault)
 
         # Build to get context_id
         env = builder.build()
@@ -59,6 +72,7 @@ class ContextMixin:
         self.state["_prov"] = PROVGraph(context_id=context_id)
         self.state["_context_id"] = context_id
         self.state["_api_client"] = JHContextClient(base_url=API_URL)
+        self.state["_pii_vault"] = pii_vault
         self.state["_step_artifacts"] = []
         self.state["_metrics"] = {
             "steps": [],

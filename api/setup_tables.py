@@ -65,6 +65,22 @@ TABLES = {
             }
         ],
     },
+    "jhcontext-pii-vault": {
+        "KeySchema": [{"AttributeName": "token_id", "KeyType": "HASH"}],
+        "AttributeDefinitions": [
+            {"AttributeName": "token_id", "AttributeType": "S"},
+            {"AttributeName": "context_id", "AttributeType": "S"},
+        ],
+        "GlobalSecondaryIndexes": [
+            {
+                "IndexName": "ContextIndex",
+                "KeySchema": [
+                    {"AttributeName": "context_id", "KeyType": "HASH"},
+                ],
+                "Projection": {"ProjectionType": "ALL"},
+            }
+        ],
+    },
 }
 
 S3_BUCKET = os.environ.get("S3_ARTIFACTS_BUCKET", "jhcontext-artifacts-dev")

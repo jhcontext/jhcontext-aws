@@ -7,9 +7,10 @@ from chalicelib.routes import envelopes, artifacts, provenance, decisions, compl
 app = Chalice(app_name="jhcontext-api")
 
 
-# ── Storage singleton ──────────────────────────────────────────────
+# ── Storage singletons ───────────────────────────────────────────
 
 _storage = None
+_pii_vault = None
 
 
 def get_storage():
@@ -21,6 +22,15 @@ def get_storage():
     return _storage
 
 
+def get_pii_vault():
+    """Lazy-init DynamoDB PII vault (singleton per Lambda container)."""
+    global _pii_vault
+    if _pii_vault is None:
+        from chalicelib.storage.pii_vault import DynamoDBPIIVault
+        _pii_vault = DynamoDBPIIVault()
+    return _pii_vault
+
+
 # ── Health ─────────────────────────────────────────────────────────
 
 @app.route("/health", methods=["GET"], cors=True)
@@ -29,7 +39,7 @@ def health():
     return {
         "status": "ok",
         "service": "jhcontext-api",
-        "version": os.environ.get("JHCONTEXT_VERSION", "0.1.0"),
+        "version": os.environ.get("JHCONTEXT_VERSION", "0.2.0"),
     }
 
 
@@ -38,13 +48,18 @@ def health():
 @app.route("/envelopes", methods=["GET", "POST"], cors=True)
 def envelopes_root():
     if app.current_request.method == "POST":
-        return envelopes.submit_envelope(app, get_storage())
+        return envelopes.submit_envelope(app, get_storage(), pii_vault=get_pii_vault())
     return envelopes.list_envelopes(app, get_storage())
 
 
 @app.route("/envelopes/{context_id}", methods=["GET"], cors=True)
 def get_envelope(context_id):
     return envelopes.get_envelope(app, get_storage(), context_id)
+
+
+@app.route("/envelopes/{context_id}/pii", methods=["DELETE"], cors=True)
+def purge_envelope_pii(context_id):
+    return envelopes.purge_pii(app, get_pii_vault(), context_id)
 
 
 # ── Artifacts ──────────────────────────────────────────────────────
