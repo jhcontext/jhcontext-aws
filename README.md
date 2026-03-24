@@ -135,9 +135,11 @@ UserML semantic payloads.
 | [Architecture](docs/architecture.md) | System diagram, repository structure, dependency separation |
 | [API Reference](docs/api-reference.md) | All API routes with curl examples |
 | [Forwarding Policy](docs/forwarding-policy.md) | Semantic-Forward vs Raw-Forward, monotonic enforcement |
+| [Understanding Run Output](docs/understanding-run-output.md) | How to read envelopes, PROV graphs, audits, metrics, and validation results |
 | [Local Development](docs/local-development.md) | Running without AWS (SQLite backend) |
 | [Security](docs/security.md) | API authentication roadmap (API key → IAM → Cognito → mTLS) |
 | [Validation](docs/validation.md) | Protocol validation, audit checks, UserML, PROV, metrics |
+| [Test Suite](tests/README.md) | Unit tests: storage backend, local mode, ontology validation |
 
 ### Crew Documentation
 
