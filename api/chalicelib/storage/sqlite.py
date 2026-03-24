@@ -17,7 +17,7 @@ from typing import Any
 from jhcontext.models import Artifact, Decision, Envelope
 
 
-_DEFAULT_DIR = os.path.expanduser("~/.jhcontext-aws")
+_DEFAULT_DIR = os.path.expanduser("~/.jhcontext-crewai")
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS envelopes (

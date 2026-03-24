@@ -29,7 +29,7 @@ def get_storage():
         if _LOCAL_MODE:
             from chalicelib.storage.sqlite import SQLiteStorage
             data_dir = os.environ.get(
-                "JHCONTEXT_DATA_DIR", os.path.expanduser("~/.jhcontext-aws")
+                "JHCONTEXT_DATA_DIR", os.path.expanduser("~/.jhcontext-crewai")
             )
             _storage = SQLiteStorage(db_path=os.path.join(data_dir, "data.db"))
         else:
@@ -45,7 +45,7 @@ def get_pii_vault():
         if _LOCAL_MODE:
             from chalicelib.storage.sqlite_pii_vault import SQLitePIIVault
             data_dir = os.environ.get(
-                "JHCONTEXT_DATA_DIR", os.path.expanduser("~/.jhcontext-aws")
+                "JHCONTEXT_DATA_DIR", os.path.expanduser("~/.jhcontext-crewai")
             )
             _pii_vault = SQLitePIIVault(
                 db_path=os.path.join(data_dir, "pii_vault.db")

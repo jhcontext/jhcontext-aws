@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-_DEFAULT_DIR = os.path.expanduser("~/.jhcontext-aws")
+_DEFAULT_DIR = os.path.expanduser("~/.jhcontext-crewai")
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS pii_tokens (

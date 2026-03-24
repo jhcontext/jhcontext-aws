@@ -1,4 +1,4 @@
-"""LLM configuration for jhcontext-aws agent crews.
+"""LLM configuration for jhcontext-crewai agent crews.
 
 Same model selection pattern as vendia-agent/src/libs/llms.py:
 - Claude Sonnet → complex reasoning, content generation (default)

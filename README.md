@@ -1,4 +1,4 @@
-# jhcontext-aws
+# jhcontext-crewai
 
 Production deployment of the **PAC-AI protocol** with CrewAI agents on AWS.
 
@@ -44,7 +44,7 @@ deployed API over HTTPS. This keeps the Lambda cold start under 2 seconds.
 ## Repository Structure
 
 ```
-jhcontext-aws/
+jhcontext-crewai/
 ├── api/                              # Chalice REST API (Lambda + API Gateway)
 │   ├── app.py                        # Chalice app — 11 routes
 │   ├── .chalice/config.json          # Lambda config (256 MB, 30s timeout)
@@ -108,7 +108,7 @@ jhcontext-aws/
 ### 1. Create DynamoDB tables and S3 bucket
 
 ```bash
-cd jhcontext-aws/api
+cd jhcontext-crewai/api
 pip install -r requirements.txt
 python setup_tables.py
 ```
@@ -123,7 +123,7 @@ This creates 4 DynamoDB tables (PAY_PER_REQUEST billing) and 1 S3 bucket:
 ### 2. Deploy API
 
 ```bash
-cd jhcontext-aws/api
+cd jhcontext-crewai/api
 ./deploy.sh
 ```
 
@@ -132,14 +132,14 @@ Note the API endpoint URL printed at the end.
 ### 3. Deploy MCP (optional)
 
 ```bash
-cd jhcontext-aws/mcp
+cd jhcontext-crewai/mcp
 ./deploy.sh
 ```
 
 ### 4. Install agent dependencies (local)
 
 ```bash
-cd jhcontext-aws
+cd jhcontext-crewai
 pip install -r agent/requirements.txt
 ```
 
@@ -358,7 +358,7 @@ For Raw-Forward, the preamble is empty.
 
 ```bash
 export JHCONTEXT_API_URL=https://{api-id}.execute-api.us-east-1.amazonaws.com/api
-cd jhcontext-aws
+cd jhcontext-crewai
 python -m agent.run --scenario healthcare
 ```
 
@@ -841,7 +841,7 @@ SQLite. All you need is a local server.
 ### Quick Start (single command)
 
 ```bash
-cd jhcontext-aws
+cd jhcontext-crewai
 python -m agent.run --local --scenario healthcare
 ```
 
@@ -854,9 +854,9 @@ to `output/`, and shuts down the server when done. No second terminal needed.
 LOCAL MODE (--local):
 ┌──────────────────────────────────────────────┐
 │ Local Server (auto-started subprocess)       │
-│  SQLiteStorage → ~/.jhcontext-aws/data.db    │
-│  Artifacts     → ~/.jhcontext-aws/artifacts/ │
-│  PII Vault     → ~/.jhcontext-aws/pii_vault.db │
+│  SQLiteStorage → ~/.jhcontext-crewai/data.db    │
+│  Artifacts     → ~/.jhcontext-crewai/artifacts/ │
+│  PII Vault     → ~/.jhcontext-crewai/pii_vault.db │
 │  Listening on :8400                          │
 └───────────────────┬──────────────────────────┘
                     │ HTTP (localhost:8400)
@@ -901,7 +901,7 @@ The `--local` flag:
 #### 2. `JHCONTEXT_LOCAL=1 chalice local` (for API development)
 
 ```bash
-cd jhcontext-aws/api
+cd jhcontext-crewai/api
 JHCONTEXT_LOCAL=1 chalice local --port 8400
 ```
 
@@ -923,7 +923,7 @@ cd ~/Repos/jhcontext-sdk
 uvicorn jhcontext.server.app:create_app --factory --port 8400
 
 # Terminal 2:
-cd ~/Repos/jhcontext-aws
+cd ~/Repos/jhcontext-crewai
 export JHCONTEXT_API_URL=http://localhost:8400
 python -m agent.run --scenario healthcare
 ```
@@ -933,7 +933,7 @@ python -m agent.run --scenario healthcare
 | Mode | Envelopes | PII Vault | Artifacts | Config |
 |------|-----------|-----------|-----------|--------|
 | **AWS** (deployed) | DynamoDB | DynamoDB (separate table) | S3 | `.chalice/config.json` env vars |
-| **Chalice local** | SQLite `~/.jhcontext-aws/data.db` | SQLite `pii_vault.db` | Filesystem `~/.jhcontext-aws/artifacts/` | `JHCONTEXT_LOCAL=1` |
+| **Chalice local** | SQLite `~/.jhcontext-crewai/data.db` | SQLite `pii_vault.db` | Filesystem `~/.jhcontext-crewai/artifacts/` | `JHCONTEXT_LOCAL=1` |
 | **SDK server** | SQLite `~/.jhcontext/data.db` | SQLite `pii_vault.db` | Filesystem `~/.jhcontext/artifacts/` | SDK defaults |
 
 Both SQLite backends implement the **exact same StorageBackend protocol** as DynamoDB —
@@ -944,7 +944,7 @@ same 9 methods, same semantics, same return types.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `JHCONTEXT_LOCAL` | _(unset)_ | Set to `1` to switch Chalice API to SQLite backend |
-| `JHCONTEXT_DATA_DIR` | `~/.jhcontext-aws` | Override data directory for Chalice local mode |
+| `JHCONTEXT_DATA_DIR` | `~/.jhcontext-crewai` | Override data directory for Chalice local mode |
 | `JHCONTEXT_API_URL` | `http://localhost:8400` | API URL for the agent (set automatically by `--local`) |
 
 ### Which Mode to Use?

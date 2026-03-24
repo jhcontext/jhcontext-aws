@@ -1,4 +1,4 @@
-"""Entry point for running jhcontext-aws agent scenarios.
+"""Entry point for running jhcontext-crewai agent scenarios.
 
 Usage:
     python -m agent.run --scenario healthcare
@@ -226,7 +226,7 @@ def _run_scenarios(args):
 # ── Main ─────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="Run jhcontext-aws agent scenarios")
+    parser = argparse.ArgumentParser(description="Run jhcontext-crewai agent scenarios")
     parser.add_argument(
         "--scenario",
         choices=["healthcare", "education", "recommendation", "all"],
