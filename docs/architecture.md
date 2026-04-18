@@ -65,11 +65,16 @@ jhcontext-crewai/
 │   │   └── validator.py
 │   ├── crews/
 │   │   ├── healthcare/               # 3+2 agents: clinical crew + oversight + audit
-│   │   ├── education/                # 4 agents: ingestion + grading + equity + audit
+│   │   ├── education/                # fair_grading/ + rubric_feedback_grading/
+│   │   │   ├── fair_grading/         # 4 agents: ingestion + grading + equity + audit
+│   │   │   └── rubric_feedback_grading/  # 6 agents: ingestion + scoring + feedback + equity
+│   │   │                             #           + ta_review + audit
 │   │   └── recommendation/           # 3 agents: profile → search → personalize
 │   ├── flows/
 │   │   ├── healthcare_flow.py        # Article 14 — human oversight with temporal proof
-│   │   ├── education_flow.py         # Article 13 — negative proof + workflow isolation
+│   │   ├── education/                # fair_grading.py + rubric_feedback_grading.py
+│   │   │   ├── fair_grading.py              # Article 13 — negative proof + workflow isolation
+│   │   │   └── rubric_feedback_grading.py   # Annex III §3 — three scenarios on 3-agent pipeline
 │   │   └── recommendation_flow.py    # LOW-risk — Raw-Forward product recommendations
 │   ├── run.py                        # Entry point: python -m agent.run --scenario ...
 │   └── requirements.txt              # Agent deps (crewai — never on Lambda)
@@ -85,7 +90,8 @@ jhcontext-crewai/
 ├── docs/                             # Documentation
 │   ├── crews/                        # Per-crew documentation
 │   │   ├── healthcare.md
-│   │   ├── education.md
+│   │   ├── education.md                            # fair-grading variant
+│   │   ├── education_rubric_feedback_grading.md    # rubric-grounded three-scenario variant
 │   │   └── recommendation.md
 │   ├── architecture.md               # This file
 │   ├── api-reference.md              # API routes + curl examples

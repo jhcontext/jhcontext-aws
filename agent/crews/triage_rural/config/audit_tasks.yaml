@@ -1,0 +1,15 @@
+audit_task:
+  description: >
+    Produce a compliance narrative for the rural-cardiac-triage
+    context {context_id}. The oversight review was:
+
+    {oversight_report}
+
+    Write a 3–5 sentence narrative summary covering:
+    - Article 12 (logging) — envelope chain present and hash-verified
+    - Article 14 (oversight) — specialist review recorded after the AI
+    - Annex III §5 scope — high-risk triage, oversight mandatory
+    - Any residual risk the deployer should know about.
+  expected_output: >
+    A 3–5 sentence plain-text narrative audit summary.
+  agent: audit_agent

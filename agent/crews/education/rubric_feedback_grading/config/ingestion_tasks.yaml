@@ -1,0 +1,28 @@
+ingestion_task:
+  description: >
+    Receive essay submission from student {student_id} on topic
+    "{essay_topic}" ({word_count} words). Separate: (a) essay text
+    content, (b) identity data (name, student ID, demographic and
+    accommodation attributes). Extract rubric-evidence spans —
+    sentences or clauses that address each rubric criterion — with
+    their character offsets in the raw essay text.
+
+    Output essay metrics in UserML observation layer:
+
+    {{"@model": "UserML", "layers": {{
+      "observation": [
+        {{"subject": "essay-{student_id}", "predicate": "word_count", "object": {word_count}}},
+        {{"subject": "essay-{student_id}", "predicate": "structural_element", "object": "introduction"}},
+        {{"subject": "essay-{student_id}", "predicate": "citation_count", "object": 0}}
+      ]
+    }}}}
+
+    The essay text output must contain ZERO identity references.
+  expected_output: >
+    Two clearly separated outputs: (1) anonymised essay text content
+    with UserML observation-layer metadata (word_count,
+    structural_element, citation_count) and an extracted-spans list
+    (offset + length + preview per candidate evidence span);
+    (2) identity-data package marked access-controlled. Both with
+    content hashes.
+  agent: ingestion_agent

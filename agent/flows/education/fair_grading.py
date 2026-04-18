@@ -1,9 +1,15 @@
-"""Education Fair Assessment Flow — Article 13 EU AI Act.
+"""Fair Grading Flow — EU AI Act Art. 13 non-discrimination.
 
-Two isolated workflows:
-  1. Grading pipeline: ingestion → grading (no identity data)
-  2. Equity pipeline: identity → equity report (no grading data)
-  3. Audit: verifies zero shared artifacts between workflows.
+Education-domain scenario demonstrating Article 13 compliance through:
+- a two-agent grading pipeline (ingestion → grading) that touches zero
+  identity data;
+- an isolated equity-reporting pipeline that touches zero grading data;
+- a cross-workflow audit that proves the two pipelines share no artifacts
+  (workflow isolation + negative proof).
+
+For the richer rubric-grounded feedback variant (6-agent pipeline with
+per-sentence feedback envelopes + TA review), see the sibling module
+``agent/flows/education/rubric_feedback_grading.py``.
 """
 
 from __future__ import annotations
@@ -14,7 +20,7 @@ from pathlib import Path
 
 from crewai.flow.flow import Flow, listen, start
 
-from agent.crews.education.crew import (
+from agent.crews.education.fair_grading.crew import (
     EducationAuditCrew,
     EducationEquityCrew,
     EducationGradingCrew,

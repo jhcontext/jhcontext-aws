@@ -1,0 +1,17 @@
+audit_task:
+  description: >
+    Produce a compliance narrative for the CHW-mental-health context
+    {context_id}. The specialist review was:
+
+    {oversight_report}
+
+    Write a 3–5 sentence narrative covering:
+    - Article 12 (logging) — envelope chain hash-verified
+    - Article 14 (oversight) — district specialist review timestamped
+      after the risk classification
+    - Annex III §5 — high-risk screening with mandatory specialist review
+    - Negative proof — variables agreed-excluded structurally absent
+    - Residual risk (e.g. time-to-review for specialist visit).
+  expected_output: >
+    3–5 sentence plain-text audit narrative.
+  agent: audit_agent

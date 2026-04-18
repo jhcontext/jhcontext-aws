@@ -1,0 +1,82 @@
+physio_signal_task:
+  description: >
+    {_forwarding_preamble}A patient presents at a district hospital with
+    chest pain. Acquire physiological observations from the edge device:
+    ECG reference {ecg_ref}, BP {bp_systolic}/{bp_diastolic}, SpO2 {spo2}.
+
+    Output a jhcontext envelope. Place observations + one interpretation
+    in the semantic_payload using the UserML format:
+
+    {{"@model": "UserML", "layers": {{
+      "observation": [
+        {{"subject": "{patient_id}", "predicate": "vital_sign",
+          "object": {{"bp_systolic": {bp_systolic},
+                      "bp_diastolic": {bp_diastolic},
+                      "spo2": {spo2}}}}},
+        {{"subject": "{patient_id}", "predicate": "imaging_finding",
+          "object": "{ecg_ref}"}}
+      ],
+      "interpretation": [
+        {{"subject": "{patient_id}", "predicate": "risk_assessment",
+          "object": "suspected_atrial_fibrillation",
+          "confidence": 0.87}}
+      ]
+    }}}}
+
+    Register one artifact in artifacts_registry with
+    artifact_id="art-physio-extraction", type="semantic_extraction".
+    Set scope="rural_cardiac_triage",
+    producer="did:hospital:physio-signal-agent",
+    risk_level="high", human_oversight_required=true,
+    forwarding_policy="semantic_forward".
+  expected_output: >
+    A FlatEnvelope with semantic_payload_json containing UserML
+    observation + interpretation layers, one SEMANTIC_EXTRACTION
+    artifact, and compliance fields set to high-risk + semantic_forward.
+  agent: physio_signal_agent
+
+triage_task:
+  description: >
+    {_forwarding_preamble}You receive the upstream envelope from the
+    physiological-signal task. Read ONLY the semantic_payload — do not
+    reach back to the raw ECG embedding.
+
+    Produce a triage priority envelope using UserML:
+
+    {{"@model": "UserML", "layers": {{
+      "observation": [],
+      "interpretation": [
+        {{"subject": "{patient_id}", "predicate": "triage_priority",
+          "object": "P1", "confidence": 0.91}}
+      ],
+      "situation": [
+        {{"subject": "{patient_id}", "predicate": "isInSituation",
+          "object": "acute_cardiac_episode", "confidence": 0.9}}
+      ]
+    }}}}
+
+    Register one artifact with artifact_id="art-triage-priority",
+    type="semantic_extraction". Include decision_influence with
+    categories=["ecg_finding", "vital_signs"] and influence weights.
+    Set compliance fields as upstream.
+  expected_output: >
+    FlatEnvelope with triage priority (P1/P2/P3) in the interpretation
+    layer, situation=acute_cardiac_episode, one SEMANTIC_EXTRACTION
+    artifact, and decision_influence carrying the categories that
+    drove the priority choice.
+  agent: triage_agent
+
+resource_task:
+  description: >
+    {_forwarding_preamble}You receive the upstream triage envelope.
+    Assign: (a) a bed, (b) a specialist route.
+
+    Produce an envelope with UserML application layer carrying the
+    allocation. Register one artifact with
+    artifact_id="art-allocation", type="semantic_extraction".
+    Set compliance fields to match upstream.
+  expected_output: >
+    FlatEnvelope with application-layer allocation (bed identifier +
+    teleconsult specialist route), one SEMANTIC_EXTRACTION artifact,
+    and oversight_required=true.
+  agent: resource_agent

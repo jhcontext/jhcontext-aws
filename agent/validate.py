@@ -21,6 +21,8 @@ from typing import Any
 from jhcontext import PROVGraph
 from jhcontext.audit import (
     verify_negative_proof,
+    verify_rubric_grounding,
+    verify_temporal_oversight,
     verify_workflow_isolation,
 )
 
@@ -223,6 +225,96 @@ def validate_education() -> dict[str, Any]:
         }
 
     # Performance metrics
+    if metrics:
+        results["metrics"]["performance"] = metrics
+
+    return results
+
+
+def validate_education_rubric() -> dict[str, Any]:
+    """Validate rubric-grounded grading scenario outputs.
+
+    Re-runs the same four SDK verifiers the flow's audit step runs, reading
+    from the persisted `.ttl` / `.json` outputs. Returns a structured result
+    dict; marked ``skipped`` if the scenario outputs are absent (expected
+    when ``--scenario education-fair`` was run without ``education-rubric``).
+    """
+    results: dict[str, Any] = {"scenario": "education-rubric", "checks": {}, "metrics": {}}
+
+    grading_prov = _load_prov(_out.current / "education_rubric_prov.ttl")
+    equity_prov = _load_prov(_out.current / "education_rubric_equity_prov.ttl")
+    ta_prov = _load_prov(_out.current / "education_rubric_ta_review_prov.ttl")
+    sentences_meta = _load_json(_out.current / "education_rubric_feedback_sentences.json")
+    audit = _load_json(_out.current / "education_rubric_audit.json")
+    metrics = _load_json(_out.current / "education_rubric_metrics.json")
+
+    if not (grading_prov or equity_prov or ta_prov):
+        results["checks"]["scenario_run"] = {
+            "passed": False,
+            "skipped": True,
+            "message": "No rubric-grading outputs found; scenario not run.",
+        }
+        return results
+
+    # Artifact characteristics
+    results["metrics"]["grading_prov_bytes"] = _file_size(_out.current / "education_rubric_prov.ttl")
+    results["metrics"]["equity_prov_bytes"] = _file_size(_out.current / "education_rubric_equity_prov.ttl")
+    results["metrics"]["ta_review_prov_bytes"] = _file_size(_out.current / "education_rubric_ta_review_prov.ttl")
+
+    if grading_prov:
+        results["metrics"]["grading_entity_count"] = len(grading_prov.get_all_entities())
+        results["metrics"]["grading_activity_count"] = len(grading_prov.get_temporal_sequence())
+
+    # Scenario A — workflow isolation + negative proof
+    if grading_prov and equity_prov:
+        isolation = verify_workflow_isolation(grading_prov, equity_prov)
+        results["checks"]["scenario_a_workflow_isolation"] = {
+            "passed": isolation.passed,
+            "evidence": isolation.evidence,
+            "message": isolation.message,
+        }
+        negative = verify_negative_proof(
+            prov=grading_prov,
+            decision_entity_id="art-feedback",
+            excluded_artifact_types=["biometric", "sensitive", "identity_data", "demographic"],
+        )
+        results["checks"]["scenario_a_negative_proof"] = {
+            "passed": negative.passed,
+            "evidence": negative.evidence,
+            "message": negative.message,
+        }
+
+    # Scenario B — rubric grounding
+    if grading_prov and sentences_meta:
+        rubric = verify_rubric_grounding(
+            prov=grading_prov,
+            feedback_sentence_ids=sentences_meta.get("feedback_sentence_ids", []),
+            submission_entity_id=sentences_meta.get("submission_entity_id", "art-ingestion"),
+        )
+        results["checks"]["scenario_b_rubric_grounding"] = {
+            "passed": rubric.passed,
+            "evidence": rubric.evidence,
+            "message": rubric.message,
+        }
+
+    # Scenario C — temporal oversight
+    if ta_prov:
+        temporal = verify_temporal_oversight(
+            prov=ta_prov,
+            ai_activity_id="act-ai-feedback",
+            human_activities=["act-oversight"],
+            min_review_seconds=5.0,
+        )
+        results["checks"]["scenario_c_temporal_oversight"] = {
+            "passed": temporal.passed,
+            "evidence": temporal.evidence,
+            "message": temporal.message,
+        }
+
+    if audit:
+        results["checks"]["flow_audit_overall_passed"] = {
+            "passed": audit.get("overall_passed", False),
+        }
     if metrics:
         results["metrics"]["performance"] = metrics
 
@@ -494,6 +586,10 @@ def run_validation() -> int:
     print("Validating education scenario...")
     education = validate_education()
     results.append(education)
+
+    print("Validating education-rubric scenario...")
+    education_rubric = validate_education_rubric()
+    results.append(education_rubric)
 
     print("Validating recommendation scenario...")
     recommendation = validate_recommendation()

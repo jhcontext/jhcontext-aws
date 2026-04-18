@@ -1,0 +1,87 @@
+interview_task:
+  description: >
+    {_forwarding_preamble}Conduct a PHQ-9 screening for patient {patient_id}.
+    Total score {phq9_total}, item-9 (suicidal ideation) score {phq9_item_9},
+    instrument PHQ-9-v1, language {language}.
+
+    Output a jhcontext envelope. Place observations + interpretation in UserML:
+
+    {{"@model": "UserML", "layers": {{
+      "observation": [
+        {{"subject": "{patient_id}", "predicate": "vital_sign",
+          "object": {{"phq9_total": {phq9_total},
+                      "phq9_item_9": {phq9_item_9}}}}},
+        {{"subject": "{patient_id}", "predicate": "demographic",
+          "object": {{"instrument": "PHQ-9-v1", "language": "{language}"}}}}
+      ],
+      "interpretation": [
+        {{"subject": "{patient_id}", "predicate": "risk_assessment",
+          "object": "phq9_scored", "confidence": 0.96}}
+      ]
+    }}}}
+
+    Register artifact_id="art-interview-structured",
+    type="semantic_extraction".
+    Set scope="chw_mental_health_screening",
+    producer="did:chw:interview-agent",
+    risk_level="high", human_oversight_required=true,
+    forwarding_policy="semantic_forward".
+  expected_output: >
+    FlatEnvelope with UserML observation + interpretation layers,
+    one SEMANTIC_EXTRACTION artifact, and high-risk compliance fields.
+  agent: interview_agent
+
+risk_classification_task:
+  description: >
+    {_forwarding_preamble}You receive the structured PHQ-9 envelope.
+    Classify severity and suicide-risk.
+
+    Produce UserML:
+
+    {{"@model": "UserML", "layers": {{
+      "observation": [],
+      "interpretation": [
+        {{"subject": "{patient_id}", "predicate": "risk_assessment",
+          "object": "moderately_severe", "confidence": 0.92}},
+        {{"subject": "{patient_id}", "predicate": "clinical_pattern",
+          "object": "elevated_suicide_risk", "confidence": 0.95}}
+      ],
+      "situation": [
+        {{"subject": "{patient_id}", "predicate": "isInSituation",
+          "object": "acute_episode", "confidence": 0.92}}
+      ]
+    }}}}
+
+    Register artifact_id="art-risk-classification",
+    type="semantic_extraction".
+    Include decision_influence with categories like
+    "phq9_severity", "suicide_item".
+    Set compliance fields as upstream.
+  expected_output: >
+    FlatEnvelope with severity + elevated_suicide_risk interpretation,
+    acute_episode situation, one SEMANTIC_EXTRACTION artifact, and
+    decision_influence.
+  agent: risk_classifier_agent
+
+referral_task:
+  description: >
+    {_forwarding_preamble}You receive the risk-classification envelope.
+    Produce a referral recommendation.
+
+    Produce UserML application layer:
+
+    {{"@model": "UserML", "layers": {{
+      "observation": [], "interpretation": [],
+      "situation": [], "application": [
+        {{"predicate": "treatment_recommendation",
+          "object": "same_week_specialist_review"}},
+        {{"predicate": "oversight_required", "object": true}}
+      ]
+    }}}}
+
+    Register artifact_id="art-referral", type="semantic_extraction".
+    Set compliance fields as upstream.
+  expected_output: >
+    FlatEnvelope with application-layer referral recommendation,
+    one SEMANTIC_EXTRACTION artifact, and oversight_required=true.
+  agent: referral_agent

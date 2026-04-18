@@ -1,0 +1,39 @@
+criterion_scoring_task:
+  description: >
+    Consume ONLY the essay text artifact and the rubric criteria
+    (rubric_v2.3 with criteria C1-thesis_clarity, C2-argument_quality,
+    C3-evidence_integration, C4-writing_mechanics). For each
+    criterion, produce a score (0..1), a confidence (0..1), and
+    cite the supporting evidence span (byte offset + length) in
+    the submission. Produce an aggregate mark. decision_influence
+    must list ONLY content-based categories — never identity
+    attributes.
+
+    Output your scoring result in UserML layers:
+
+    {{"@model": "UserML", "layers": {{
+      "observation": [],
+      "interpretation": [
+        {{"subject": "ESSAY_ID", "predicate": "C1-thesis_clarity",       "object": 0.82, "confidence": 0.90}},
+        {{"subject": "ESSAY_ID", "predicate": "C2-argument_quality",     "object": 0.78, "confidence": 0.85}},
+        {{"subject": "ESSAY_ID", "predicate": "C3-evidence_integration", "object": 0.88, "confidence": 0.92}},
+        {{"subject": "ESSAY_ID", "predicate": "C4-writing_mechanics",    "object": 0.75, "confidence": 0.87}}
+      ],
+      "situation": [
+        {{"subject": "ESSAY_ID", "predicate": "isInSituation", "object": "scoring_complete", "confidence": 0.88}}
+      ],
+      "application": [
+        {{"predicate": "overall_grade", "object": {{"letter": "B+", "numeric": 87}}}},
+        {{"predicate": "grade_confidence", "object": 0.88}},
+        {{"predicate": "rubric_version", "object": "rubric_v2.3"}}
+      ]
+    }}}}
+  expected_output: >
+    Scoring report in UserML format with: interpretation layer
+    per-criterion scores (C1..C4), situation layer marking
+    scoring_complete, application layer with overall_grade,
+    grade_confidence, and rubric_version. For each interpretation
+    entry also include a non-UserML side-annotation
+    evidence_span_ref = {{offset, length}} so the feedback agent
+    can cite the same span.
+  agent: criterion_scoring_agent

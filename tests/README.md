@@ -74,6 +74,30 @@ which is the same sequence the real flows execute.
 
 ---
 
+### test_offline_layer.py — Offline Queue + Sync Manager (4 tests)
+
+Tests the offline protocol layer ([`agent/protocol/offline_queue.py`](../agent/protocol/offline_queue.py) + [`sync_manager.py`](../agent/protocol/sync_manager.py)) used by the offline healthcare scenarios. No CrewAI, no LLM, no API key required.
+
+| Test | What it verifies |
+|------|-----------------|
+| `test_clean_drain_chain_verified` | Three envelopes enqueued offline with correct predecessor-hash chain → all drain cleanly when uplink returns |
+| `test_tamper_detected` | Envelope whose stored `content_hash` disagrees with re-computed hash is marked `tampered`, not submitted upstream |
+| `test_chain_broken_detected` | Envelope referencing a wrong predecessor hash is marked `chain_broken`, not submitted upstream |
+| `test_late_flag_when_drain_window_is_days_later` | Envelope drained more than the threshold (default 6 h) after queueing is flagged `late` |
+
+---
+
+### test_offline_flow_e2e.py — End-to-End Offline Flow (2 tests)
+
+Exercises the full `OfflineContextMixin` → `OfflineQueue` → `SyncManager` chain as a production offline-healthcare flow would, but without running any CrewAI agent.
+
+| Test | What it verifies |
+|------|-----------------|
+| `test_three_handoff_chain_drains_cleanly` | Drives the mixin through three simulated handoffs (physio → triage → allocation) and verifies all three drain with intact predecessor-hash chain |
+| `test_tamper_is_detected_on_drain` | After the flow enqueues, mutate the stored envelope_json directly in SQLite → drain correctly flags only that envelope as tampered |
+
+---
+
 ### test_ontologies.py — Domain Ontology Validation (15 tests)
 
 Tests the UserML semantic payload structure and domain-specific predicate vocabularies.
@@ -139,5 +163,6 @@ tests/test_sqlite_storage.py ................      [100%]
 | `F` | Test failed — assertion error (see traceback) |
 | `E` | Test errored — unexpected exception (import error, missing fixture) |
 
-A healthy run shows **33 passed, 1 skipped**. The skip is `test_local_mode_uses_sqlite`
-when Chalice is not installed.
+A healthy run shows **33 passed, 1 skipped** for the infrastructure suite, plus
+**6 passed** for the offline layer (`test_offline_layer.py` + `test_offline_flow_e2e.py`).
+The skip is `test_local_mode_uses_sqlite` when Chalice is not installed.

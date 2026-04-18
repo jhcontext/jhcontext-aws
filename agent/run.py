@@ -2,7 +2,8 @@
 
 Usage:
     python -m agent.run --scenario healthcare
-    python -m agent.run --scenario education
+    python -m agent.run --scenario education-fair        # fair grading (Art. 13)
+    python -m agent.run --scenario education-rubric      # rubric-grounded grading
     python -m agent.run --scenario recommendation
     python -m agent.run --scenario all
     python -m agent.run --local --scenario healthcare
@@ -151,10 +152,15 @@ def run_healthcare():
     return result
 
 
-def run_education():
-    """Run the education fair assessment scenario (Article 13)."""
+def run_education_fair():
+    """Run the education fair assessment scenario (Article 13).
+
+    Uses the 2-agent pipeline focused on Article 13 non-discrimination. For
+    the richer three-scenario rubric-grounded variant, see
+    ``run_education_rubric``.
+    """
     import agent.output_dir as _out
-    from agent.flows.education_flow import (
+    from agent.flows.education.fair_grading import (
         EducationAuditFlow,
         EducationEquityFlow,
         EducationGradingFlow,
@@ -199,6 +205,48 @@ def run_recommendation():
     print("\n" + "=" * 60)
     print("Recommendation scenario complete.")
     print(f"Outputs in: {_out.current}/recommendation_*")
+    return result
+
+
+def run_education_rubric():
+    """Run the rubric-grounded three-scenario education variant.
+
+    Exercises a shared 3-agent pipeline (ingestion → criterion-scoring →
+    feedback), an isolated equity workflow, a TA review with temporal
+    oversight, and a combined audit that runs four SDK verifiers covering
+    Scenarios A, B, and C (EU AI Act Annex III §3).
+    """
+    import agent.output_dir as _out
+    from agent.flows.education.rubric_feedback_grading import (
+        RubricAuditFlow,
+        RubricEquityFlow,
+        RubricGradingFlow,
+        RubricTAReviewFlow,
+    )
+
+    print("=" * 60)
+    print("SCENARIO: Rubric-Grounded Grading (EU AI Act Annex III §3)")
+    print("  Pipeline: ingestion → scoring → feedback (+TA review)")
+    print("  Scenarios: (A) identity-blind grading, (B) rubric-grounded")
+    print("             feedback, (C) human–AI collaborative grading")
+    print("  Risk: HIGH")
+    print("=" * 60)
+
+    print("\n--- Grading Pipeline (Scenarios A + B) ---")
+    RubricGradingFlow().kickoff()
+
+    print("\n--- Equity Reporting Workflow (isolated) ---")
+    RubricEquityFlow().kickoff()
+
+    print("\n--- TA Review (Scenario C — temporal oversight) ---")
+    RubricTAReviewFlow().kickoff()
+
+    print("\n--- Combined Audit (three verifiers) ---")
+    result = RubricAuditFlow().kickoff()
+
+    print("\n" + "=" * 60)
+    print("Rubric-grounded grading scenario complete.")
+    print(f"Outputs in: {_out.current}/education_rubric_*")
     return result
 
 
@@ -247,8 +295,11 @@ def _run_scenarios(args):
     if args.scenario in ("healthcare", "all"):
         run_healthcare()
 
-    if args.scenario in ("education", "all"):
-        run_education()
+    if args.scenario in ("education-fair", "all"):
+        run_education_fair()
+
+    if args.scenario in ("education-rubric", "all"):
+        run_education_rubric()
 
     if args.scenario in ("recommendation", "all"):
         run_recommendation()
@@ -273,7 +324,7 @@ def main():
     parser = argparse.ArgumentParser(description="Run jhcontext-crewai agent scenarios")
     parser.add_argument(
         "--scenario",
-        choices=["healthcare", "education", "recommendation", "finance", "all"],
+        choices=["healthcare", "education-fair", "education-rubric", "recommendation", "finance", "all"],
         default="all",
         help="Which scenario to run (default: all)",
     )

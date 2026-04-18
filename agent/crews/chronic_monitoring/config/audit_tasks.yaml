@@ -1,0 +1,15 @@
+audit_task:
+  description: >
+    Produce a compliance narrative for the chronic-monitoring
+    context {context_id}. The nurse review was:
+
+    {oversight_report}
+
+    Write a 3–5 sentence narrative covering:
+    - Article 12 (logging) — envelope chain and model-upgrade trace
+    - Article 14 (oversight) — nurse review recorded after the alert
+    - Annex III §5 — high-risk chronic monitoring
+    - Any residual risk (missed daily envelopes, uplink gaps).
+  expected_output: >
+    3–5 sentence plain-text audit narrative.
+  agent: audit_agent

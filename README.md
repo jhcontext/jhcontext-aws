@@ -45,9 +45,22 @@ Each scenario demonstrates a different EU AI Act compliance pattern:
 | Scenario | Article | Risk | Agents | Key Proof |
 |----------|---------|------|--------|-----------|
 | [Healthcare](docs/crews/healthcare.md) | Art. 14 — Human Oversight | HIGH | 5 (sensor → situation → decision → oversight → audit) | Temporal proof that physician reviewed docs AFTER AI recommendation |
-| [Education](docs/crews/education.md) | Art. 13 — Non-Discrimination | HIGH | 4 (ingestion → grading ╳ equity → audit) | Workflow isolation + negative proof (identity absent from grading) |
+| [Education — Fair Grading](docs/crews/education.md) | Art. 13 — Non-Discrimination | HIGH | 4 (ingestion → grading ╳ equity → audit) | Workflow isolation + negative proof (identity absent from grading) |
+| [Education — Rubric-Grounded Grading](docs/crews/education_rubric_feedback_grading.md) | Annex III §3 — Three-scenario audit | HIGH | 6 (ingestion → scoring → feedback → equity → TA review → audit) | (A) negative proof + isolation, (B) rubric-criterion binding, (C) temporal oversight |
 | [Recommendation](docs/crews/recommendation.md) | LOW-risk | LOW | 3 (profile → search → personalize) | Full provenance with Raw-Forward policy |
 | [Finance](docs/crews/finance.md) | Annex III 5(b) — Composite | HIGH | 7 (data → risk → decision → oversight ╳ fair lending → audit) | All 4 patterns: negative proof + temporal oversight + workflow isolation + PII detachment |
+
+### Offline-first healthcare scenarios
+
+Three additional scenarios exercise PAC-AI under **offline/deferred-sync** semantics. Envelopes are enqueued into a local SQLite queue during connectivity outages and drained when the uplink returns — with predecessor-hash chain verification, tamper detection, and late-arrival flagging at drain time.
+
+| Scenario | Risk | Agents | Connectivity profile |
+|----------|------|--------|----------------------|
+| [Rural Cardiac Triage](docs/crews/healthcare_offline_scenarios.md) | HIGH (Annex III §5) | 3 (physio-signal → triage → resource-allocation) + teleconsult oversight | Offline during AI pipeline → online for specialist review 10 min later |
+| [Chronic-Disease Remote Monitoring](docs/crews/healthcare_offline_scenarios.md) | HIGH | 4 (sensor-agg → trend → alert → care-plan) + nurse oversight | Offline per daily handoff → opportunistic sync → next-day nurse review |
+| [CHW Mental-Health Screening](docs/crews/healthcare_offline_scenarios.md) | HIGH | 3 (PHQ-9 interview → risk-classifier → referral) + district-specialist oversight | Offline during CHW home visit → online on return to clinic |
+
+See [Offline healthcare scenarios](docs/crews/healthcare_offline_scenarios.md) for the code mapping, connectivity timelines, and the full list of outputs per run.
 
 ## Crew Delegation in PROV
 
@@ -157,7 +170,8 @@ export JHCONTEXT_API_URL=https://{api-id}.execute-api.us-east-1.amazonaws.com/ap
 
 ```bash
 python -m agent.run --scenario healthcare
-python -m agent.run --scenario education
+python -m agent.run --scenario education-fair
+python -m agent.run --scenario education-rubric
 python -m agent.run --scenario recommendation
 python -m agent.run --scenario finance
 python -m agent.run --scenario all
@@ -183,6 +197,43 @@ python -m agent.run --validate v01    # validate specific run
 See [Validation](docs/validation.md) for interpreting results, audit checks, and
 UserML semantic payloads.
 
+### Offline healthcare simulation
+
+The offline healthcare scenarios run via a separate driver that skips the Chalice API and
+enqueues envelopes into a local SQLite queue during scripted connectivity outages,
+then drains them against the scripted timeline with chain / tamper / late-arrival
+verification:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+python -m agent.offline_simulate triage    # Rural cardiac triage
+python -m agent.offline_simulate chronic   # Chronic-disease remote monitoring
+python -m agent.offline_simulate chw       # CHW mental-health screening
+python -m agent.offline_simulate all
+```
+
+Outputs under `output/runs/vNN/`:
+
+| File | Description |
+|------|-------------|
+| `<scenario>_envelopes.json` | Per-task envelope snapshots (JSON-LD) |
+| `<scenario>_prov.ttl` | W3C PROV graph (Turtle) |
+| `<scenario>_audit.json` | Programmatic + narrative audit report |
+| `<scenario>_queue.sqlite` | Local offline queue persisted across runs |
+| `<scenario>_sync_log.json` | Drain report (queued / drained / tampered / chain_broken / late) |
+| `<scenario>_upstream_received.json` | What the mock upstream actually received at drain time |
+| `healthcare_offline_summary.json` | Combined summary across the three scenarios |
+
+The simulation driver is in [`agent/offline_simulate.py`](agent/offline_simulate.py); the offline protocol layer (drop-in replacement for `ContextMixin`) lives in [`agent/protocol/`](agent/protocol/) — `offline_queue.py`, `sync_manager.py`, `offline_context_mixin.py`, `mock_upstream.py`. Full detail in [Offline healthcare scenarios](docs/crews/healthcare_offline_scenarios.md).
+
+### Running the test suite
+
+```bash
+.venv/bin/python -m pytest tests/test_offline_layer.py tests/test_offline_flow_e2e.py -v
+```
+
+The offline protocol layer ships with 6 tests covering clean drain, tamper detection, chain-break detection, late-arrival flagging, and a full mixin→queue→sync end-to-end chain that runs without an Anthropic API key.
+
 ## Documentation
 
 | Topic | Description |
@@ -201,13 +252,15 @@ UserML semantic payloads.
 | Crew | Article | Description |
 |------|---------|-------------|
 | [Healthcare](docs/crews/healthcare.md) | Art. 14 | 5 agents, 3 crews, Semantic-Forward, temporal oversight proof |
-| [Education](docs/crews/education.md) | Art. 13 | 4 agents, 3 isolated flows, workflow isolation + negative proof |
+| [Education — Fair Grading](docs/crews/education.md) | Art. 13 | 4 agents, 3 isolated flows, workflow isolation + negative proof |
+| [Education — Rubric-Grounded Grading](docs/crews/education_rubric_feedback_grading.md) | Annex III §3 | 6 agents, 4 flows, three-scenario audit (negative proof + rubric grounding + temporal oversight) |
 | [Recommendation](docs/crews/recommendation.md) | LOW-risk | 3 agents, 1 crew, Raw-Forward, full provenance |
 | [Finance](docs/crews/finance.md) | Annex III 5(b) | 7 agents, 4 crews, composite compliance (all 4 patterns) |
+| [Offline healthcare scenarios](docs/crews/healthcare_offline_scenarios.md) | Annex III §5 | Rural triage + chronic monitoring + CHW mental-health, offline-first with scripted connectivity |
 
 ### Scenario Diagrams
 
-Reference figures from the PAC-AI paper (IADIS AIS 2026):
+Reference figures from the PAC-AI protocol:
 
 | Figure | Scenario | Description |
 |--------|----------|-------------|

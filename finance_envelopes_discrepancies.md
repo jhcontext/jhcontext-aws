@@ -1,6 +1,6 @@
-# Finance Envelopes vs IADIS Paper — Discrepancies
+# Finance Envelopes vs PAC-AI Reference — Discrepancies
 
-Comparison of `finance_envelopes.json` (v03) against the IADIS AIS 2026 paper specification (Sections 3, 3.2, 5 and Figure 1).
+Comparison of `finance_envelopes.json` (v03) against the PAC-AI reference specification (Sections 3, 3.2, 5 and Figure 1).
 
 ## 1. Field Naming Mismatches
 

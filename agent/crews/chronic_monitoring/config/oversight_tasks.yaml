@@ -1,0 +1,16 @@
+oversight_task:
+  description: >
+    Review the chronic-monitoring care-plan output below and respond with
+    a JSON verdict.
+
+    Care plan:
+    {recommendation}
+
+    JSON keys:
+      decision: "approve" | "modify" | "override"
+      justification: one-sentence clinical reasoning
+      alternatives_considered: list of {{treatment: str, reasoning: str}}
+  expected_output: >
+    JSON object with decision, justification, and
+    alternatives_considered keys.
+  agent: nurse_agent

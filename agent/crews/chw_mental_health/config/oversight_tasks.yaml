@@ -1,0 +1,16 @@
+oversight_task:
+  description: >
+    Review the CHW mental-health screening output below and respond
+    with a JSON verdict.
+
+    Referral output:
+    {recommendation}
+
+    JSON keys:
+      decision: "confirm" | "modify" | "override"
+      justification: one-sentence clinical reasoning
+      alternatives_considered: list of {{treatment: str, reasoning: str}}
+  expected_output: >
+    JSON object with decision, justification, and
+    alternatives_considered keys.
+  agent: specialist_agent

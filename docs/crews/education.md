@@ -1,4 +1,10 @@
-# Education Crew — Article 13 Non-Discrimination
+# Education Crew — Article 13 Non-Discrimination (fair grading)
+
+> **Variant mapping.** This document describes the **fair grading** variant
+> (`agent/flows/education/fair_grading.py`,
+> `agent/crews/education/fair_grading/`). For the richer
+> rubric-grounded three-scenario variant (3-agent pipeline + TA review) see
+> [`education_rubric_feedback_grading.md`](education_rubric_feedback_grading.md).
 
 EU AI Act Article 13 compliance scenario: an AI grading system that must prove identity
 data never influenced the grading decision, using workflow isolation and negative
@@ -244,7 +250,7 @@ Equity PROV (education_equity_prov.ttl):
 ## Running
 
 ```bash
-python -m agent.run --local --scenario education
+python -m agent.run --local --scenario education-fair
 ```
 
 ## Default Student

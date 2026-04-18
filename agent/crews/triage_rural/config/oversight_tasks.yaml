@@ -1,0 +1,15 @@
+oversight_task:
+  description: >
+    Review the triage-pipeline output below and produce a JSON verdict.
+
+    Triage output:
+    {recommendation}
+
+    Respond with a JSON object with keys:
+      decision: "agree" | "escalate" | "override"
+      justification: one-sentence clinical reasoning
+      alternatives_considered: list of {{treatment: str, reasoning: str}}
+  expected_output: >
+    A JSON object with decision, justification, and
+    alternatives_considered keys.
+  agent: specialist_agent

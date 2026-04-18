@@ -1,0 +1,111 @@
+sensor_aggregation_task:
+  description: >
+    {_forwarding_preamble}Aggregate today's readings for patient {patient_id}.
+    HR {hr_mean}, BP {bp_systolic_mean}, SpO2 {spo2_min},
+    fasting glucose {glucose_fasting}, weight {weight_kg} kg,
+    step count {steps}.
+
+    Output a jhcontext envelope. Place observations in UserML:
+
+    {{"@model": "UserML", "layers": {{"observation": [
+      {{"subject": "{patient_id}", "predicate": "vital_sign",
+        "object": {{"hr_mean": {hr_mean},
+                    "bp_systolic_mean": {bp_systolic_mean},
+                    "spo2_min": {spo2_min}}}}},
+      {{"subject": "{patient_id}", "predicate": "lab_result",
+        "object": {{"name": "glucose_fasting", "value": {glucose_fasting}}}}},
+      {{"subject": "{patient_id}", "predicate": "demographic",
+        "object": {{"weight_kg": {weight_kg}, "steps": {steps}}}}}
+    ]}}}}
+
+    Register artifact_id="art-daily-aggregate", type="token_sequence".
+    Set scope="chronic_remote_monitoring",
+    producer="did:clinic:sensor-aggregation-agent",
+    risk_level="high", human_oversight_required=true,
+    forwarding_policy="semantic_forward".
+  expected_output: >
+    FlatEnvelope with UserML observation layer containing the day's
+    vitals + glucose + demographics, one TOKEN_SEQUENCE artifact,
+    and high-risk compliance fields.
+  agent: sensor_aggregation_agent
+
+trend_analysis_task:
+  description: >
+    {_forwarding_preamble}You consume the seven most recent daily-aggregate
+    envelopes (this task represents the weekly trend inference).
+    Read only the semantic_payload observations.
+
+    Produce UserML:
+
+    {{"@model": "UserML", "layers": {{
+      "observation": [],
+      "interpretation": [
+        {{"subject": "{patient_id}", "predicate": "treatment_response",
+          "object": "rising_bp", "confidence": 0.82}},
+        {{"subject": "{patient_id}", "predicate": "biomarker_trend",
+          "object": "rising_glucose", "confidence": 0.79}}
+      ],
+      "situation": [
+        {{"subject": "{patient_id}", "predicate": "isInSituation",
+          "object": "monitoring_required", "confidence": 0.88}}
+      ]
+    }}}}
+
+    Register artifact_id="art-weekly-trend", type="semantic_extraction".
+    Include decision_influence with categories like "bp_trend", "glucose_trend".
+    Set compliance fields as upstream.
+  expected_output: >
+    FlatEnvelope with weekly trend interpretation + chronic-
+    decompensation-risk situation, one SEMANTIC_EXTRACTION artifact,
+    and decision_influence carrying the contributing trend dimensions.
+  agent: trend_analysis_agent
+
+alert_task:
+  description: >
+    {_forwarding_preamble}You receive the weekly trend envelope. Decide
+    whether the trajectory warrants a nurse-review alert.
+
+    Produce an envelope with UserML application-layer alert:
+
+    {{"@model": "UserML", "layers": {{
+      "observation": [], "interpretation": [],
+      "situation": [
+        {{"subject": "{patient_id}", "predicate": "isInSituation",
+          "object": "monitoring_required"}}
+      ],
+      "application": [
+        {{"predicate": "alert_scope", "object": "sustained_trajectory"}},
+        {{"predicate": "oversight_required", "object": true}}
+      ]
+    }}}}
+
+    Register artifact_id="art-alert", type="semantic_extraction".
+    Set compliance fields as upstream.
+  expected_output: >
+    FlatEnvelope with an alert in the UserML application layer,
+    alert_scope tagged (acute_threshold|sustained_trajectory),
+    one SEMANTIC_EXTRACTION artifact, and oversight_required=true.
+  agent: alert_agent
+
+care_plan_task:
+  description: >
+    {_forwarding_preamble}You receive the alert envelope. Propose a
+    care-plan adjustment.
+
+    Produce an envelope with UserML application-layer plan:
+
+    {{"@model": "UserML", "layers": {{
+      "observation": [], "interpretation": [],
+      "situation": [], "application": [
+        {{"predicate": "treatment_recommendation",
+          "object": "metformin_titration_plus_nurse_visit"}},
+        {{"predicate": "oversight_required", "object": true}}
+      ]
+    }}}}
+
+    Register artifact_id="art-care-plan", type="semantic_extraction".
+    Set compliance fields as upstream.
+  expected_output: >
+    FlatEnvelope with application-layer care-plan recommendation,
+    one SEMANTIC_EXTRACTION artifact, and oversight_required=true.
+  agent: care_plan_agent

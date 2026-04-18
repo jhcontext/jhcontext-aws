@@ -1,6 +1,6 @@
-# Finance Envelopes vs IADIS Paper — Discrepancies
+# Finance Envelopes vs PAC-AI Reference — Discrepancies
 
-Comparison of `finance_envelopes.json` (v03) against the IADIS AIS 2026 paper and jhcontext-protocol v0.3 spec.
+Comparison of `finance_envelopes.json` (v03) against the PAC-AI reference specification and jhcontext-protocol v0.3 spec.
 
 ## Investigation Result
 
