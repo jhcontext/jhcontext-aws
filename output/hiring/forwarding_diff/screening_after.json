@@ -1,0 +1,38 @@
+{
+  "semantic_payload": [
+    {
+      "interpretations": [
+        {
+          "subject": "cand-0001",
+          "predicate": "rank_score",
+          "object": 0.455,
+          "confidence": 0.88
+        },
+        {
+          "subject": "cand-0002",
+          "predicate": "rank_score",
+          "object": 0.468,
+          "confidence": 0.88
+        },
+        {
+          "subject": "cand-0003",
+          "predicate": "rank_score",
+          "object": 0.618,
+          "confidence": 0.88
+        },
+        {
+          "subject": "cand-0004",
+          "predicate": "rank_score",
+          "object": 0.562,
+          "confidence": 0.88
+        },
+        {
+          "subject": "cand-0005",
+          "predicate": "rank_score",
+          "object": 0.572,
+          "confidence": 0.88
+        }
+      ]
+    }
+  ]
+}

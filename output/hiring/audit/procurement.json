@@ -1,0 +1,30 @@
+{
+  "checks": [
+    {
+      "check_name": "sourcing_neutrality",
+      "passed": true,
+      "message": "Sourcing neutrality verified: 1 entities free of 5 banned targeting params"
+    },
+    {
+      "check_name": "no_prohibited_practice",
+      "passed": true,
+      "message": "No prohibited practice: 7 artifacts free of 2 banned capabilities"
+    },
+    {
+      "check_name": "workforce_notice",
+      "passed": true,
+      "message": "Workforce notice verified: signed by did:deployer:hr-director on 2026-03-02T09:00:00+00:00"
+    },
+    {
+      "check_name": "input_data_attestation",
+      "passed": true,
+      "message": "Input data attestation verified: 3 model artifact(s) bound"
+    },
+    {
+      "check_name": "integrity",
+      "passed": true,
+      "message": "Integrity verified"
+    }
+  ],
+  "overall_passed": true
+}

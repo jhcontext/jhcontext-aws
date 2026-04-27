@@ -1,0 +1,74 @@
+{
+  "context_id": "ctx-022b71bd-eac2-4e0f-95ab-ba5d05cc7961",
+  "schema_version": "jh:0.3",
+  "producer": "did:vendor:decision-support-agent",
+  "created_at": "2026-04-27T17:43:57.180690+00:00",
+  "ttl": "PT30M",
+  "status": "active",
+  "scope": "hiring_decision_support",
+  "semantic_payload": [
+    {
+      "applications": [
+        {
+          "subject": "cand-0005",
+          "predicate": "recommend",
+          "object": {
+            "tier": "advance",
+            "rationale": "Strong skills_overlap + tenure_pattern under the rubric weights (0.31 + 0.18)."
+          }
+        }
+      ]
+    }
+  ],
+  "artifacts_registry": [
+    {
+      "artifact_id": "art-recruiter-packet",
+      "type": "semantic_extraction",
+      "content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "timestamp": "2026-04-27T17:43:57.180713+00:00",
+      "deterministic": false,
+      "metadata": {}
+    }
+  ],
+  "decision_influence": [
+    {
+      "agent": "decision-support-agent",
+      "categories": [
+        "years_experience",
+        "skills_overlap",
+        "tenure_pattern",
+        "language_signal"
+      ],
+      "abstraction_level": "situation",
+      "temporal_scope": "current",
+      "influence_weights": {},
+      "confidence": 0.0
+    }
+  ],
+  "privacy": {
+    "data_category": "behavioral",
+    "legal_basis": "consent",
+    "retention": "P7D",
+    "storage_policy": "centralized-encrypted",
+    "feature_suppression": [],
+    "pii_detached": false
+  },
+  "compliance": {
+    "risk_level": "high",
+    "human_oversight_required": true,
+    "forwarding_policy": "semantic_forward"
+  },
+  "provenance_ref": {},
+  "proof": {
+    "canonicalization": "URDNA2015",
+    "content_hash": "45346cc6e59239c9010634b51e62e7833e613c26876be297f8236f21daa86f65",
+    "signature": "CiIJxUpBxlmAyqZFyao3AWktkh4EdAsgzG4k20bcpZuSd3_ebZXdsaM02cfPUXX7AIFZQUKlIctOzehth7thAA==",
+    "signer": "did:vendor:decision-support-agent"
+  },
+  "@context": {
+    "jh": "https://jhcontext.com/vocab#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@type": "jh:Envelope"
+}

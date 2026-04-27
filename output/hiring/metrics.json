@@ -1,0 +1,20 @@
+{
+  "use_mock_llm": true,
+  "inject_violation": false,
+  "crew_kickoff_ms": 1464.9461449880619,
+  "recruiter_review_seconds": 1200.0,
+  "context_id": "ctx-hiring-post-2026-q2-swe-04",
+  "steps": [
+    "sourcing",
+    "parsing",
+    "screening",
+    "interview",
+    "ranking",
+    "decision_support"
+  ],
+  "semantic_boundary_reached": true,
+  "procurement_passed": true,
+  "inflight_passed": true,
+  "overall_passed": true,
+  "total_ms": 3636.392070999136
+}

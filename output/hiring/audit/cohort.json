@@ -1,0 +1,52 @@
+{
+  "corpus_size": 312,
+  "feature_usage_census": [
+    {
+      "handoff": "hiring_cohort_screening_to_ranking",
+      "total_receipts": 312,
+      "feature_counts": {
+        "years_experience": 312,
+        "skills_overlap": 312,
+        "tenure_pattern": 312,
+        "language_signal": 312
+      }
+    }
+  ],
+  "four_fifths": {
+    "group_attribute": "experience_band",
+    "protected_value": ">15y",
+    "reference_value": "5-10y",
+    "protected_total": 100,
+    "protected_advanced": 18,
+    "reference_total": 100,
+    "reference_advanced": 30,
+    "selection_rate_protected": 0.18,
+    "selection_rate_reference": 0.3,
+    "ratio": 0.6,
+    "passed": false
+  },
+  "incident_attestation": {
+    "passed": false,
+    "message": "INCIDENT ATTESTATION FAILED: 1/2 suspension(s) lack timely notification",
+    "evidence": {
+      "suspensions": 2,
+      "notification_window_days": 15,
+      "findings": [
+        {
+          "suspension_activity": "susp-2026-Q1-A",
+          "suspension_started_at": "2026-01-15T09:00:00+00:00",
+          "notification": {
+            "activity_id": "notif-2026-Q1-A",
+            "started_at": "2026-01-25T09:00:00+00:00",
+            "delta_days": 10
+          }
+        },
+        {
+          "suspension_activity": "susp-2026-Q1-B",
+          "suspension_started_at": "2026-03-01T09:00:00+00:00",
+          "notification": null
+        }
+      ]
+    }
+  }
+}

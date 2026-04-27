@@ -1,0 +1,121 @@
+{
+  "context_id": "ctx-5c586951-d7bd-4d18-bafd-e1bfe50f5041",
+  "schema_version": "jh:0.3",
+  "producer": "did:vendor:parsing-agent",
+  "created_at": "2026-04-27T17:43:56.912628+00:00",
+  "ttl": "PT30M",
+  "status": "active",
+  "scope": "hiring_parsing",
+  "semantic_payload": [
+    {
+      "observations": [
+        {
+          "subject": "cand-0001",
+          "predicate": "experience_band",
+          "object": "<2y"
+        },
+        {
+          "subject": "cand-0002",
+          "predicate": "experience_band",
+          "object": ">15y"
+        },
+        {
+          "subject": "cand-0003",
+          "predicate": "experience_band",
+          "object": ">15y"
+        },
+        {
+          "subject": "cand-0004",
+          "predicate": "experience_band",
+          "object": "11-15y"
+        },
+        {
+          "subject": "cand-0005",
+          "predicate": "experience_band",
+          "object": "2-5y"
+        }
+      ],
+      "interpretations": [
+        {
+          "subject": "cand-0001",
+          "predicate": "skills_overlap",
+          "object": 0.414,
+          "confidence": 0.9
+        },
+        {
+          "subject": "cand-0002",
+          "predicate": "skills_overlap",
+          "object": 0.448,
+          "confidence": 0.9
+        },
+        {
+          "subject": "cand-0003",
+          "predicate": "skills_overlap",
+          "object": 0.731,
+          "confidence": 0.9
+        },
+        {
+          "subject": "cand-0004",
+          "predicate": "skills_overlap",
+          "object": 0.521,
+          "confidence": 0.9
+        },
+        {
+          "subject": "cand-0005",
+          "predicate": "skills_overlap",
+          "object": 0.784,
+          "confidence": 0.9
+        }
+      ]
+    }
+  ],
+  "artifacts_registry": [
+    {
+      "artifact_id": "art-parsed-cohort",
+      "type": "semantic_extraction",
+      "content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "timestamp": "2026-04-27T17:43:56.912656+00:00",
+      "deterministic": false,
+      "metadata": {}
+    }
+  ],
+  "decision_influence": [
+    {
+      "agent": "parsing-agent",
+      "categories": [
+        "experience_band",
+        "skills_overlap"
+      ],
+      "abstraction_level": "situation",
+      "temporal_scope": "current",
+      "influence_weights": {},
+      "confidence": 0.0
+    }
+  ],
+  "privacy": {
+    "data_category": "behavioral",
+    "legal_basis": "consent",
+    "retention": "P7D",
+    "storage_policy": "centralized-encrypted",
+    "feature_suppression": [],
+    "pii_detached": false
+  },
+  "compliance": {
+    "risk_level": "high",
+    "human_oversight_required": true,
+    "forwarding_policy": "semantic_forward"
+  },
+  "provenance_ref": {},
+  "proof": {
+    "canonicalization": "URDNA2015",
+    "content_hash": "5db0e6f6f4ef6b174631a853495c0c32adffea5a4c31ffcd96ff0bc00cc45b6c",
+    "signature": "hsOVOzF6HYUlbSknN774B_IXgYymIixeSHia1qu36ZwjXM94mRcMQiAxC1ICAR_jsz56whaGjrJ8zuNi040RDw==",
+    "signer": "did:vendor:parsing-agent"
+  },
+  "@context": {
+    "jh": "https://jhcontext.com/vocab#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@type": "jh:Envelope"
+}

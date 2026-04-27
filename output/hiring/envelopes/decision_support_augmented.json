@@ -1,0 +1,146 @@
+{
+  "context_id": "ctx-07a3bc53-cfe7-4017-8a47-2a758369a8a8",
+  "schema_version": "jh:0.3",
+  "producer": "did:vendor:decision-support-agent",
+  "created_at": "2026-04-27T17:43:57.227677+00:00",
+  "ttl": "PT30M",
+  "status": "active",
+  "scope": "hiring_decision_support",
+  "semantic_payload": [
+    {
+      "applications": [
+        {
+          "subject": "cand-0005",
+          "predicate": "recommend",
+          "object": {
+            "tier": "advance",
+            "rationale": "Strong skills_overlap + tenure_pattern under the rubric weights (0.31 + 0.18)."
+          }
+        }
+      ]
+    }
+  ],
+  "artifacts_registry": [
+    {
+      "artifact_id": "art-recruiter-packet",
+      "type": "semantic_extraction",
+      "content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "timestamp": "2026-04-27T17:43:57.227727+00:00",
+      "deterministic": false,
+      "metadata": {}
+    },
+    {
+      "artifact_id": "att-workforce",
+      "type": "tool_result",
+      "content_hash": "sha256:wf-collective-notice-2026Q1",
+      "timestamp": "2026-04-27T17:43:57.227743+00:00",
+      "deterministic": false,
+      "metadata": {
+        "kind": "workforce_notice_attestation",
+        "signer": "did:deployer:hr-director",
+        "attestation_hash": "sha256:wf-2026Q1",
+        "attestation_timestamp": "2026-03-02T09:00:00+00:00"
+      }
+    },
+    {
+      "artifact_id": "att-cand-notice",
+      "type": "tool_result",
+      "content_hash": "sha256:cand-notice-001",
+      "timestamp": "2026-04-27T17:43:57.227755+00:00",
+      "deterministic": false,
+      "metadata": {
+        "kind": "candidate_notice_attestation",
+        "candidate_id": "cand-0001",
+        "signer": "did:deployer:notification-service",
+        "attestation_hash": "sha256:cand-notice-cand-0001",
+        "attestation_timestamp": "2026-04-25T17:43:57.227749+00:00"
+      }
+    },
+    {
+      "artifact_id": "art-model-screener",
+      "type": "semantic_extraction",
+      "content_hash": "sha256:9ac0900a06c1ec40a6a8d1ea6a8fd329babf4d8b317bde0c113c746b79cd9e89",
+      "model": "screener-v1.4",
+      "timestamp": "2026-04-27T17:43:57.227774+00:00",
+      "deterministic": false,
+      "metadata": {
+        "capabilities": [
+          "text_classification",
+          "embedding",
+          "ranking"
+        ],
+        "data_governance_attestation_ref": "data-gov:role-fam-swe-2026Q1",
+        "data_governance_attestation_signer": "did:deployer:dpo"
+      }
+    },
+    {
+      "artifact_id": "art-model-parser",
+      "type": "semantic_extraction",
+      "content_hash": "sha256:e39568ddc13ef6e3a977afc34f93b739986c183f4259e87661d357d9083ff3be",
+      "model": "cv-parser-v3.1",
+      "timestamp": "2026-04-27T17:43:57.227784+00:00",
+      "deterministic": false,
+      "metadata": {
+        "capabilities": [
+          "entity_extraction",
+          "schema_mapping"
+        ],
+        "data_governance_attestation_ref": "data-gov:role-fam-swe-2026Q1",
+        "data_governance_attestation_signer": "did:deployer:dpo"
+      }
+    },
+    {
+      "artifact_id": "art-model-interview",
+      "type": "semantic_extraction",
+      "content_hash": "sha256:a749d348e907bc9cf0091825821e61beff2b9d856341ccbd2e9f12b115328745",
+      "model": "interview-transcribe-v0.9",
+      "timestamp": "2026-04-27T17:43:57.227792+00:00",
+      "deterministic": false,
+      "metadata": {
+        "capabilities": [
+          "transcript_extraction",
+          "speech_to_text"
+        ],
+        "data_governance_attestation_ref": "data-gov:role-fam-swe-2026Q1",
+        "data_governance_attestation_signer": "did:deployer:dpo"
+      }
+    },
+    {
+      "artifact_id": "art-decision",
+      "type": "semantic_extraction",
+      "content_hash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "timestamp": "2026-04-27T17:43:57.227797+00:00",
+      "deterministic": false,
+      "metadata": {
+        "kind": "decision"
+      }
+    }
+  ],
+  "decision_influence": [],
+  "privacy": {
+    "data_category": "behavioral",
+    "legal_basis": "consent",
+    "retention": "P7D",
+    "storage_policy": "centralized-encrypted",
+    "feature_suppression": [],
+    "pii_detached": false
+  },
+  "compliance": {
+    "risk_level": "high",
+    "human_oversight_required": true,
+    "forwarding_policy": "semantic_forward"
+  },
+  "provenance_ref": {},
+  "proof": {
+    "canonicalization": "URDNA2015",
+    "content_hash": "e560632f512d309bdd574676004e7393c699142305c7d8b7cd8fec5304f5d55a",
+    "signature": "b6tYLG8hkoBrZIo1xYNMpSLD4PB-4DmGlqgbYFoqNBwsbnV71ExOe8oO4VxCNyEfVdUHrbSo34luybP2E5t5DA==",
+    "signer": "did:deployer:compliance-officer"
+  },
+  "@context": {
+    "jh": "https://jhcontext.com/vocab#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@type": "jh:Envelope"
+}

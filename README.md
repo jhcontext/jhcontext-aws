@@ -2,10 +2,10 @@
 
 Production deployment of the **PAC-AI protocol** with CrewAI agents on AWS.
 
-Multi-agent healthcare, education, recommendation, and finance scenarios that demonstrate
-EU AI Act compliance (Annex III 5(b), Articles 13 and 14) through auditable context
-envelopes, W3C PROV provenance graphs, and cryptographic integrity verification — all
-persisted on DynamoDB + S3.
+Multi-agent healthcare, education, recommendation, finance, and hiring scenarios
+that demonstrate EU AI Act compliance (Annex III 4(a) and 5(b), Articles 5(1)(f)/(g),
+13, 14, and 26) through auditable context envelopes, W3C PROV provenance graphs,
+and cryptographic integrity verification — all persisted on DynamoDB + S3.
 
 > **TL;DR:** This is the production-grade version of the jhcontext compliance scenarios — real CrewAI agents, AWS infrastructure (Chalice Lambda + DynamoDB + S3), and persistent storage. For a lightweight in-memory proof-of-concept with no infrastructure, see [jhcontext-usecases](../jhcontext-usecases/).
 
@@ -50,6 +50,7 @@ Each scenario demonstrates a different EU AI Act compliance pattern:
 | Education — Oral Feedback (supplementary) | Annex III §3 (multimodal) | HIGH | 6 (audio-ingestion → scoring → feedback → equity → TA review → audit) | Same A/B/C pattern over audio; per-sentence binding to `(start_ms, end_ms)` audited via `verify_multimodal_binding` |
 | [Recommendation](docs/crews/recommendation.md) | LOW-risk | LOW | 3 (profile → search → personalize) | Full provenance with Raw-Forward policy |
 | [Finance](docs/crews/finance.md) | Annex III 5(b) — Composite | HIGH | 7 (data → risk → decision → oversight ╳ fair lending → audit) | All 4 patterns: negative proof + temporal oversight + workflow isolation + PII detachment |
+| [Hiring](agent/crews/hiring/README.md) | Annex III §4(a) + Arts. 5(1)(f)/(g), 13, 14, 26 | HIGH | 6 (sourcing → parsing → screening → interview → ranking → decision-support) + recruiter | Quadripartite Semantic-Forward at every handoff (every task outputs a `FlatEnvelope`); 7 HR-specific verifiers + cohort 4/5 disparate-impact test |
 
 ### Offline-first healthcare scenarios
 
@@ -179,6 +180,26 @@ python -m agent.run --scenario finance
 python -m agent.run --scenario all
 ```
 
+### Hiring scenarios (offline-friendly)
+
+The hiring crew runs the full six-task multi-agent pipeline with
+`FlatEnvelope` round-tripping at every handoff. With
+`HIRING_USE_MOCK_LLM=1` it reproduces deterministically without an
+`ANTHROPIC_API_KEY`:
+
+```bash
+HIRING_USE_MOCK_LLM=1 python -m agent.scenarios.hiring.run_procurement
+HIRING_USE_MOCK_LLM=1 python -m agent.scenarios.hiring.run_inflight
+HIRING_USE_MOCK_LLM=1 python -m agent.scenarios.hiring.run_cohort
+HIRING_USE_MOCK_LLM=1 python -m agent.scenarios.hiring.run_all
+python -m agent.scenarios.hiring.render_forwarding_diff   # before/after sizes per handoff
+```
+
+See [agent/crews/hiring/README.md](agent/crews/hiring/README.md) for the
+six functional agents, the FlatEnvelope→Envelope→ForwardingEnforcer→
+FlatEnvelope round trip per task, and the three audit checkpoints
+(procurement, in-flight, cohort).
+
 ### Without AWS (local mode)
 
 ```bash
@@ -258,6 +279,7 @@ The offline protocol layer ships with 6 tests covering clean drain, tamper detec
 | [Education — Rubric-Grounded Grading](docs/crews/education_rubric_feedback_grading.md) | Annex III §3 | 6 agents, 4 flows, three-scenario audit (negative proof + rubric grounding + temporal oversight) |
 | [Recommendation](docs/crews/recommendation.md) | LOW-risk | 3 agents, 1 crew, Raw-Forward, full provenance |
 | [Finance](docs/crews/finance.md) | Annex III 5(b) | 7 agents, 4 crews, composite compliance (all 4 patterns) |
+| [Hiring](agent/crews/hiring/README.md) | Annex III §4(a) + Arts. 5(1)(f)/(g), 13, 14, 26 | 6 agents, 1 crew, Quadripartite Semantic-Forward; 7 HR-specific verifiers + cohort 4/5; mock-LLM offline mode |
 | [Offline healthcare scenarios](docs/crews/healthcare_offline_scenarios.md) | Annex III §5 | Rural triage + chronic monitoring + CHW mental-health, offline-first with scripted connectivity |
 
 ### Scenario Diagrams

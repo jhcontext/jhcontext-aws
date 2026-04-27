@@ -1,0 +1,30 @@
+{
+  "checks": [
+    {
+      "check_name": "negative_proof",
+      "passed": true,
+      "message": "Negative proof verified: 2 excluded types absent from 0 entities in chain"
+    },
+    {
+      "check_name": "candidate_notice",
+      "passed": true,
+      "message": "Candidate notice verified: candidate cand-0001 notified on 2026-04-25T17:43:57.227749+00:00 (pre-decision)"
+    },
+    {
+      "check_name": "temporal_oversight",
+      "passed": true,
+      "message": "Human oversight verified: 1/1 activities after AI, 1200s review time"
+    },
+    {
+      "check_name": "ai_literacy_attestation",
+      "passed": true,
+      "message": "AI literacy verified: 1 overseer(s) competence-bound"
+    },
+    {
+      "check_name": "integrity",
+      "passed": true,
+      "message": "Integrity verified"
+    }
+  ],
+  "overall_passed": true
+}

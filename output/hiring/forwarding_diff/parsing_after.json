@@ -1,0 +1,65 @@
+{
+  "semantic_payload": [
+    {
+      "observations": [
+        {
+          "subject": "cand-0001",
+          "predicate": "experience_band",
+          "object": "<2y"
+        },
+        {
+          "subject": "cand-0002",
+          "predicate": "experience_band",
+          "object": ">15y"
+        },
+        {
+          "subject": "cand-0003",
+          "predicate": "experience_band",
+          "object": ">15y"
+        },
+        {
+          "subject": "cand-0004",
+          "predicate": "experience_band",
+          "object": "11-15y"
+        },
+        {
+          "subject": "cand-0005",
+          "predicate": "experience_band",
+          "object": "2-5y"
+        }
+      ],
+      "interpretations": [
+        {
+          "subject": "cand-0001",
+          "predicate": "skills_overlap",
+          "object": 0.414,
+          "confidence": 0.9
+        },
+        {
+          "subject": "cand-0002",
+          "predicate": "skills_overlap",
+          "object": 0.448,
+          "confidence": 0.9
+        },
+        {
+          "subject": "cand-0003",
+          "predicate": "skills_overlap",
+          "object": 0.731,
+          "confidence": 0.9
+        },
+        {
+          "subject": "cand-0004",
+          "predicate": "skills_overlap",
+          "object": 0.521,
+          "confidence": 0.9
+        },
+        {
+          "subject": "cand-0005",
+          "predicate": "skills_overlap",
+          "object": 0.784,
+          "confidence": 0.9
+        }
+      ]
+    }
+  ]
+}

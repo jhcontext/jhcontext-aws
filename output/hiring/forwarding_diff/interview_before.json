@@ -1,0 +1,70 @@
+{
+  "context_id": "ctx-b54c34f4-8266-4b1d-a66f-c3b5d2e06593",
+  "schema_version": "jh:0.3",
+  "producer": "did:vendor:interview-agent",
+  "created_at": "2026-04-27T17:43:57.051383+00:00",
+  "ttl": "PT30M",
+  "status": "active",
+  "scope": "hiring_interview",
+  "semantic_payload": [
+    {
+      "interpretations": [
+        {
+          "subject": "cand-0003",
+          "predicate": "competency",
+          "object": "demonstrated systems-design fluency",
+          "confidence": 0.82
+        },
+        {
+          "subject": "cand-0005",
+          "predicate": "competency",
+          "object": "demonstrated systems-design fluency",
+          "confidence": 0.82
+        }
+      ]
+    }
+  ],
+  "artifacts_registry": [
+    {
+      "artifact_id": "art-interview-competencies",
+      "type": "semantic_extraction",
+      "content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "timestamp": "2026-04-27T17:43:57.051406+00:00",
+      "deterministic": false,
+      "metadata": {}
+    }
+  ],
+  "decision_influence": [
+    {
+      "agent": "interview-agent",
+      "categories": [
+        "communication",
+        "problem_solving"
+      ],
+      "abstraction_level": "situation",
+      "temporal_scope": "current",
+      "influence_weights": {},
+      "confidence": 0.0
+    }
+  ],
+  "privacy": {
+    "data_category": "behavioral",
+    "legal_basis": "consent",
+    "retention": "P7D",
+    "storage_policy": "centralized-encrypted",
+    "feature_suppression": [],
+    "pii_detached": false
+  },
+  "compliance": {
+    "risk_level": "high",
+    "human_oversight_required": true,
+    "forwarding_policy": "semantic_forward"
+  },
+  "provenance_ref": {},
+  "proof": {
+    "canonicalization": "URDNA2015",
+    "content_hash": "030a2474f2df929600c7f6f15abb2d7d60b3295ec8c6d5e40af598015cf6564c",
+    "signature": "LFz-31LdkJIFZ6XVEXd1UcL3t5C1W7-gdlKpVkYKwnltxgZX53xy24_yeTppWZNigjSXDV4CVZDfoWcU2ZIEBA==",
+    "signer": "did:vendor:interview-agent"
+  }
+}

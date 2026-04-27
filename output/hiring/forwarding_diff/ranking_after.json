@@ -1,0 +1,38 @@
+{
+  "semantic_payload": [
+    {
+      "interpretations": [
+        {
+          "subject": "cand-0005",
+          "predicate": "tier",
+          "object": "advance",
+          "confidence": 0.85
+        },
+        {
+          "subject": "cand-0003",
+          "predicate": "tier",
+          "object": "hold",
+          "confidence": 0.85
+        },
+        {
+          "subject": "cand-0004",
+          "predicate": "tier",
+          "object": "hold",
+          "confidence": 0.85
+        },
+        {
+          "subject": "cand-0002",
+          "predicate": "tier",
+          "object": "decline",
+          "confidence": 0.85
+        },
+        {
+          "subject": "cand-0001",
+          "predicate": "tier",
+          "object": "decline",
+          "confidence": 0.85
+        }
+      ]
+    }
+  ]
+}

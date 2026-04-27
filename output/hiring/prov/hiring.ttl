@@ -1,0 +1,140 @@
+@prefix jh: <https://jhcontext.com/vocab#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+jh:recruiter-review a prov:Activity ;
+    rdfs:label "Recruiter reviews decision_support packet (Art. 14 oversight)" ;
+    prov:endedAtTime "2026-04-27T18:08:57.181199+00:00"^^xsd:dateTime ;
+    prov:startedAtTime "2026-04-27T17:48:57.181199+00:00"^^xsd:dateTime ;
+    prov:used jh:art-recruiter-packet ;
+    prov:wasAssociatedWith jh:recruiter-jane ;
+    jh:method "manual review of semantic_payload only" .
+
+<did:vendor:decision-support-agent> a prov:Agent ;
+    rdfs:label "did:vendor:decision-support-agent" ;
+    prov:actedOnBehalfOf <https://jhcontext.com/vocab#crew:hiring> ;
+    jh:role "decision_support" .
+
+<did:vendor:interview-agent> a prov:Agent ;
+    rdfs:label "did:vendor:interview-agent" ;
+    prov:actedOnBehalfOf <https://jhcontext.com/vocab#crew:hiring> ;
+    jh:role "interview" .
+
+<did:vendor:parsing-agent> a prov:Agent ;
+    rdfs:label "did:vendor:parsing-agent" ;
+    prov:actedOnBehalfOf <https://jhcontext.com/vocab#crew:hiring> ;
+    jh:role "parsing" .
+
+<did:vendor:ranking-agent> a prov:Agent ;
+    rdfs:label "did:vendor:ranking-agent" ;
+    prov:actedOnBehalfOf <https://jhcontext.com/vocab#crew:hiring> ;
+    jh:role "ranking" .
+
+<did:vendor:screening-agent> a prov:Agent ;
+    rdfs:label "did:vendor:screening-agent" ;
+    prov:actedOnBehalfOf <https://jhcontext.com/vocab#crew:hiring> ;
+    jh:role "screening" .
+
+<did:vendor:sourcing-agent> a prov:Agent ;
+    rdfs:label "did:vendor:sourcing-agent" ;
+    prov:actedOnBehalfOf <https://jhcontext.com/vocab#crew:hiring> ;
+    jh:role "sourcing" .
+
+jh:act-decision_support a prov:Activity ;
+    rdfs:label "decision_support" ;
+    prov:endedAtTime "2026-04-27T17:43:57.181199+00:00"^^xsd:dateTime ;
+    prov:startedAtTime "2026-04-27T17:43:57.181199+00:00"^^xsd:dateTime ;
+    prov:used jh:art-tiered-shortlist ;
+    prov:wasAssociatedWith <did:vendor:decision-support-agent> .
+
+jh:act-interview a prov:Activity ;
+    rdfs:label "interview" ;
+    prov:endedAtTime "2026-04-27T17:43:57.051893+00:00"^^xsd:dateTime ;
+    prov:startedAtTime "2026-04-27T17:43:57.051893+00:00"^^xsd:dateTime ;
+    prov:used jh:art-screening-rank ;
+    prov:wasAssociatedWith <did:vendor:interview-agent> .
+
+jh:act-parsing a prov:Activity ;
+    rdfs:label "parsing" ;
+    prov:endedAtTime "2026-04-27T17:43:56.913206+00:00"^^xsd:dateTime ;
+    prov:startedAtTime "2026-04-27T17:43:56.913206+00:00"^^xsd:dateTime ;
+    prov:used jh:art-sourcing-decision ;
+    prov:wasAssociatedWith <did:vendor:parsing-agent> .
+
+jh:act-ranking a prov:Activity ;
+    rdfs:label "ranking" ;
+    prov:endedAtTime "2026-04-27T17:43:57.103616+00:00"^^xsd:dateTime ;
+    prov:startedAtTime "2026-04-27T17:43:57.103616+00:00"^^xsd:dateTime ;
+    prov:used jh:art-interview-competencies ;
+    prov:wasAssociatedWith <did:vendor:ranking-agent> .
+
+jh:act-screening a prov:Activity ;
+    rdfs:label "screening" ;
+    prov:endedAtTime "2026-04-27T17:43:56.957288+00:00"^^xsd:dateTime ;
+    prov:startedAtTime "2026-04-27T17:43:56.957288+00:00"^^xsd:dateTime ;
+    prov:used jh:art-parsed-cohort ;
+    prov:wasAssociatedWith <did:vendor:screening-agent> .
+
+jh:act-sourcing a prov:Activity ;
+    rdfs:label "sourcing" ;
+    prov:endedAtTime "2026-04-27T17:43:56.834363+00:00"^^xsd:dateTime ;
+    prov:startedAtTime "2026-04-27T17:43:56.834363+00:00"^^xsd:dateTime ;
+    prov:wasAssociatedWith <did:vendor:sourcing-agent> .
+
+jh:art-recruiter-packet a prov:Entity ;
+    rdfs:label "decision_support output" ;
+    prov:wasDerivedFrom jh:art-tiered-shortlist ;
+    prov:wasGeneratedBy jh:act-decision_support ;
+    jh:artifactType "semantic_extraction" ;
+    jh:contentHash "45346cc6e59239c9010634b51e62e7833e613c26876be297f8236f21daa86f65" .
+
+jh:recruiter-jane a prov:Agent ;
+    rdfs:label "Jane Doe" ;
+    jh:competenceRecordHash "sha256:d5c3de1fea5a119323ebe06e1285a30ce2343d54f3f9ff0bfebfd2da9c209bc3" ;
+    jh:competenceRecordSigner "did:deployer:training-officer" ;
+    jh:role "recruiter" .
+
+jh:art-interview-competencies a prov:Entity ;
+    rdfs:label "interview output" ;
+    prov:wasDerivedFrom jh:art-screening-rank ;
+    prov:wasGeneratedBy jh:act-interview ;
+    jh:artifactType "semantic_extraction" ;
+    jh:contentHash "030a2474f2df929600c7f6f15abb2d7d60b3295ec8c6d5e40af598015cf6564c" .
+
+jh:art-parsed-cohort a prov:Entity ;
+    rdfs:label "parsing output" ;
+    prov:wasDerivedFrom jh:art-sourcing-decision ;
+    prov:wasGeneratedBy jh:act-parsing ;
+    jh:artifactType "semantic_extraction" ;
+    jh:contentHash "5db0e6f6f4ef6b174631a853495c0c32adffea5a4c31ffcd96ff0bc00cc45b6c" .
+
+jh:art-screening-rank a prov:Entity ;
+    rdfs:label "screening output" ;
+    prov:wasDerivedFrom jh:art-parsed-cohort ;
+    prov:wasGeneratedBy jh:act-screening ;
+    jh:artifactType "semantic_extraction" ;
+    jh:contentHash "e4aee1e44f7876e1dcb5e0aea5a046b91abaea604b0f9145df81701a3ad2671d" .
+
+jh:art-sourcing-decision a prov:Entity ;
+    rdfs:label "sourcing output" ;
+    prov:wasGeneratedBy jh:act-sourcing ;
+    jh:adTargetingParam "geo:EU",
+        "industry:software",
+        "language:en",
+        "seniority:mid-senior" ;
+    jh:artifactType "semantic_extraction" ;
+    jh:contentHash "0e99f212eac7ebbf90cf9b0b85bd5a8e8d433c938ad0575b8624a18472cd96af" .
+
+jh:art-tiered-shortlist a prov:Entity ;
+    rdfs:label "ranking output" ;
+    prov:wasDerivedFrom jh:art-interview-competencies ;
+    prov:wasGeneratedBy jh:act-ranking ;
+    jh:artifactType "semantic_extraction" ;
+    jh:contentHash "cb126a5e3a62777673a837fef64433cdb18f23d6ed93f27f96aff071cc82841a" .
+
+<https://jhcontext.com/vocab#crew:hiring> a prov:Agent,
+        prov:SoftwareAgent ;
+    rdfs:label "Hiring Pipeline Crew" ;
+    jh:agentType "crew" .
+

@@ -1,0 +1,20 @@
+{
+  "semantic_payload": [
+    {
+      "interpretations": [
+        {
+          "subject": "cand-0003",
+          "predicate": "competency",
+          "object": "demonstrated systems-design fluency",
+          "confidence": 0.82
+        },
+        {
+          "subject": "cand-0005",
+          "predicate": "competency",
+          "object": "demonstrated systems-design fluency",
+          "confidence": 0.82
+        }
+      ]
+    }
+  ]
+}

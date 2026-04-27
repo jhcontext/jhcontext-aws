@@ -1,0 +1,85 @@
+{
+  "context_id": "ctx-5c8997e8-0536-49e4-b3e1-8c7b983380dd",
+  "schema_version": "jh:0.3",
+  "producer": "did:vendor:sourcing-agent",
+  "created_at": "2026-04-27T17:43:56.830339+00:00",
+  "ttl": "PT30M",
+  "status": "active",
+  "scope": "hiring_sourcing",
+  "semantic_payload": [
+    {
+      "observations": [
+        {
+          "subject": "policy:targeting",
+          "predicate": "ad_param",
+          "object": "geo:EU"
+        },
+        {
+          "subject": "policy:targeting",
+          "predicate": "ad_param",
+          "object": "language:en"
+        },
+        {
+          "subject": "policy:targeting",
+          "predicate": "ad_param",
+          "object": "industry:software"
+        },
+        {
+          "subject": "policy:targeting",
+          "predicate": "ad_param",
+          "object": "seniority:mid-senior"
+        }
+      ]
+    }
+  ],
+  "artifacts_registry": [
+    {
+      "artifact_id": "art-sourcing-decision",
+      "type": "semantic_extraction",
+      "content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "timestamp": "2026-04-27T17:43:56.830392+00:00",
+      "deterministic": false,
+      "metadata": {}
+    }
+  ],
+  "decision_influence": [
+    {
+      "agent": "sourcing-agent",
+      "categories": [
+        "geo",
+        "language",
+        "industry"
+      ],
+      "abstraction_level": "situation",
+      "temporal_scope": "current",
+      "influence_weights": {},
+      "confidence": 0.0
+    }
+  ],
+  "privacy": {
+    "data_category": "behavioral",
+    "legal_basis": "consent",
+    "retention": "P7D",
+    "storage_policy": "centralized-encrypted",
+    "feature_suppression": [],
+    "pii_detached": false
+  },
+  "compliance": {
+    "risk_level": "high",
+    "human_oversight_required": true,
+    "forwarding_policy": "raw_forward"
+  },
+  "provenance_ref": {},
+  "proof": {
+    "canonicalization": "URDNA2015",
+    "content_hash": "0e99f212eac7ebbf90cf9b0b85bd5a8e8d433c938ad0575b8624a18472cd96af",
+    "signature": "eVOoQojct7-h9591bYHzHYVzkF-vrm3myjTiaz-T6NilJi1eq9d20q_foINkQoC7Xv7SkK2UcOHGHW4lkaL8BA==",
+    "signer": "did:vendor:sourcing-agent"
+  },
+  "@context": {
+    "jh": "https://jhcontext.com/vocab#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@type": "jh:Envelope"
+}

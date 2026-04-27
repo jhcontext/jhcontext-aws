@@ -1,0 +1,96 @@
+{
+  "context_id": "ctx-25c51e4b-e9b9-4a62-99e9-91923638cbdb",
+  "schema_version": "jh:0.3",
+  "producer": "did:vendor:screening-agent",
+  "created_at": "2026-04-27T17:43:56.956674+00:00",
+  "ttl": "PT30M",
+  "status": "active",
+  "scope": "hiring_screening",
+  "semantic_payload": [
+    {
+      "interpretations": [
+        {
+          "subject": "cand-0001",
+          "predicate": "rank_score",
+          "object": 0.455,
+          "confidence": 0.88
+        },
+        {
+          "subject": "cand-0002",
+          "predicate": "rank_score",
+          "object": 0.468,
+          "confidence": 0.88
+        },
+        {
+          "subject": "cand-0003",
+          "predicate": "rank_score",
+          "object": 0.618,
+          "confidence": 0.88
+        },
+        {
+          "subject": "cand-0004",
+          "predicate": "rank_score",
+          "object": 0.562,
+          "confidence": 0.88
+        },
+        {
+          "subject": "cand-0005",
+          "predicate": "rank_score",
+          "object": 0.572,
+          "confidence": 0.88
+        }
+      ]
+    }
+  ],
+  "artifacts_registry": [
+    {
+      "artifact_id": "art-screening-rank",
+      "type": "semantic_extraction",
+      "content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "timestamp": "2026-04-27T17:43:56.956712+00:00",
+      "deterministic": false,
+      "metadata": {}
+    }
+  ],
+  "decision_influence": [
+    {
+      "agent": "screening-agent",
+      "categories": [
+        "years_experience",
+        "skills_overlap",
+        "tenure_pattern",
+        "language_signal"
+      ],
+      "abstraction_level": "situation",
+      "temporal_scope": "current",
+      "influence_weights": {},
+      "confidence": 0.0
+    }
+  ],
+  "privacy": {
+    "data_category": "behavioral",
+    "legal_basis": "consent",
+    "retention": "P7D",
+    "storage_policy": "centralized-encrypted",
+    "feature_suppression": [],
+    "pii_detached": false
+  },
+  "compliance": {
+    "risk_level": "high",
+    "human_oversight_required": true,
+    "forwarding_policy": "semantic_forward"
+  },
+  "provenance_ref": {},
+  "proof": {
+    "canonicalization": "URDNA2015",
+    "content_hash": "e4aee1e44f7876e1dcb5e0aea5a046b91abaea604b0f9145df81701a3ad2671d",
+    "signature": "SpP0_tRs9OFshFSawV_cF2GLOMWmpiWPdgtdu6epIJ51GxEUi1pBtq1nNZEb_8sS1RmFQfW2lYwCKASwT6kCDA==",
+    "signer": "did:vendor:screening-agent"
+  },
+  "@context": {
+    "jh": "https://jhcontext.com/vocab#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@type": "jh:Envelope"
+}

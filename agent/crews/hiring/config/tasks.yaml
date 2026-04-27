@@ -1,0 +1,172 @@
+sourcing_task:
+  description: >
+    {_forwarding_preamble}Sourcing handoff for posting {posting_id}.
+    Build a candidate pool from public profile fields only. Forbidden
+    ad-targeting parameters: {prohibited_targeting_attrs}. None of these
+    may appear in your output.
+
+    Output a FlatEnvelope with:
+      - producer:               "did:vendor:sourcing-agent"
+      - scope:                  "hiring_sourcing"
+      - artifact_id:            "art-sourcing-decision"
+      - artifact_type:          "semantic_extraction"
+      - risk_level:             "high"
+      - human_oversight_required: true
+      - forwarding_policy:      "raw_forward"   (initial step, no boundary yet)
+      - semantic_payload_json:  JSON string of [
+          {{"observations": [
+             {{"subject": "policy:targeting", "predicate": "ad_param", "object": "geo:EU"}},
+             {{"subject": "policy:targeting", "predicate": "ad_param", "object": "language:en"}},
+             {{"subject": "policy:targeting", "predicate": "ad_param", "object": "industry:software"}}
+          ]}}
+        ]
+      - di_agent:               "sourcing-agent"
+      - di_categories:          ["geo", "language", "industry"]
+  expected_output: >
+    FlatEnvelope JSON with producer/scope/artifact_id set, risk_level=high,
+    forwarding_policy=raw_forward, and a semantic_payload_json describing
+    the sourcing policy (no identifiers, no banned targeting attrs).
+  agent: sourcing_agent
+
+parsing_task:
+  description: >
+    {_forwarding_preamble}Parsing handoff. You will receive the prior
+    task's FlatEnvelope. Read its ``semantic_payload_json`` only.
+    Extract structured fields per candidate from the synthetic
+    candidate list provided in inputs.
+
+    Suppressed fields (must NOT appear in your output):
+    {suppressed_identifiers}.
+
+    Output a FlatEnvelope with:
+      - producer:               "did:vendor:parsing-agent"
+      - scope:                  "hiring_parsing"
+      - artifact_id:            "art-parsed-cohort"
+      - artifact_type:          "semantic_extraction"
+      - risk_level:             "high"
+      - forwarding_policy:      "semantic_forward"   (boundary STARTS here)
+      - semantic_payload_json:  JSON string of one dict per candidate
+                                (candidate_id + experience_band + skills_overlap)
+      - di_agent:               "parsing-agent"
+      - di_categories:          ["experience_band", "skills_overlap"]
+  expected_output: >
+    FlatEnvelope JSON with parsed candidate records (no suppressed
+    identifiers) and forwarding_policy=semantic_forward.
+  agent: parsing_agent
+
+screening_task:
+  description: >
+    {_forwarding_preamble}Screening handoff. You will receive the parsing
+    task's FlatEnvelope; read its ``semantic_payload_json`` only.
+
+    Rank candidates using ONLY these four features and exact weights:
+    years_experience=0.42, skills_overlap=0.31, tenure_pattern=0.18,
+    language_signal=0.09. Sum is 1.0.
+
+    Output a FlatEnvelope with:
+      - producer:               "did:vendor:screening-agent"
+      - scope:                  "hiring_screening"
+      - artifact_id:            "art-screening-rank"
+      - artifact_type:          "semantic_extraction"
+      - risk_level:             "high"
+      - forwarding_policy:      "semantic_forward"
+      - semantic_payload_json:  JSON string of [
+          {{"interpretations": [
+             {{"subject": "<candidate_id>", "predicate": "rank_score",
+               "object": <0-1 score>, "confidence": 0.88}}, ...
+          ]}}
+        ]
+      - di_agent:               "screening-agent"
+      - di_categories:          ["years_experience", "skills_overlap",
+                                "tenure_pattern", "language_signal"]
+  expected_output: >
+    FlatEnvelope JSON with one rank_score interpretation per candidate
+    plus the four-category decision_influence list.
+  agent: screening_agent
+
+interview_task:
+  description: >
+    {_forwarding_preamble}Async-interview handoff. You will receive the
+    screening task's FlatEnvelope; read its ``semantic_payload_json`` only
+    (no raw video/audio is forwarded -- that is the Quadripartite boundary).
+
+    For each candidate that received a rank_score >= 0.6, produce a
+    competency statement. NEVER infer emotion, demeanor, accent
+    acceptability, or attractiveness.
+
+    Output a FlatEnvelope with:
+      - producer:               "did:vendor:interview-agent"
+      - scope:                  "hiring_interview"
+      - artifact_id:            "art-interview-competencies"
+      - artifact_type:          "semantic_extraction"
+      - risk_level:             "high"
+      - forwarding_policy:      "semantic_forward"
+      - semantic_payload_json:  JSON string of [
+          {{"interpretations": [
+             {{"subject": "<candidate_id>", "predicate": "competency",
+               "object": "<short statement>", "confidence": 0.8}}, ...
+          ]}}
+        ]
+      - di_agent:               "interview-agent"
+      - di_categories:          ["communication", "problem_solving"]
+  expected_output: >
+    FlatEnvelope JSON with one competency interpretation per shortlisted
+    candidate; no emotion/demeanor inference.
+  agent: interview_agent
+
+ranking_task:
+  description: >
+    {_forwarding_preamble}Final-ranking handoff. You will receive the
+    screening AND interview FlatEnvelopes via context; read only their
+    ``semantic_payload_json`` fields.
+
+    Combine the screening rank and competency statements into three tiers:
+    advance (top 30%), hold (next 40%), decline (bottom 30%).
+
+    Output a FlatEnvelope with:
+      - producer:               "did:vendor:ranking-agent"
+      - scope:                  "hiring_ranking"
+      - artifact_id:            "art-tiered-shortlist"
+      - artifact_type:          "semantic_extraction"
+      - risk_level:             "high"
+      - forwarding_policy:      "semantic_forward"
+      - semantic_payload_json:  JSON string of [
+          {{"interpretations": [
+             {{"subject": "<candidate_id>", "predicate": "tier",
+               "object": "advance|hold|decline", "confidence": 0.85}}, ...
+          ]}}
+        ]
+      - di_agent:               "ranking-agent"
+      - di_categories:          ["screening_rank", "interview_competency"]
+  expected_output: >
+    FlatEnvelope JSON with one tier interpretation per candidate.
+  agent: ranking_agent
+
+decision_support_task:
+  description: >
+    {_forwarding_preamble}Decision-support handoff. You will receive the
+    ranking FlatEnvelope; read only its ``semantic_payload_json`` field.
+
+    Build the recruiter packet: for each ``advance``-tier candidate, write
+    a one-sentence rationale referencing the decision_influence categories.
+    Suppressed identifiers ({suppressed_identifiers}) must NEVER appear.
+
+    Output a FlatEnvelope with:
+      - producer:               "did:vendor:decision-support-agent"
+      - scope:                  "hiring_decision_support"
+      - artifact_id:            "art-recruiter-packet"
+      - artifact_type:          "semantic_extraction"
+      - risk_level:             "high"
+      - forwarding_policy:      "semantic_forward"
+      - semantic_payload_json:  JSON string of [
+          {{"applications": [
+             {{"subject": "<candidate_id>", "predicate": "recommend",
+               "object": {{"tier": "advance", "rationale": "<short>"}}}}, ...
+          ]}}
+        ]
+      - di_agent:               "decision-support-agent"
+      - di_categories:          ["years_experience", "skills_overlap",
+                                "tenure_pattern", "language_signal"]
+  expected_output: >
+    FlatEnvelope JSON with the recruiter packet; no suppressed identifiers.
+  agent: decision_support_agent

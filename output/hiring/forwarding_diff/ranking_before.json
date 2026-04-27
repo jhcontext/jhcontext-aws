@@ -1,0 +1,88 @@
+{
+  "context_id": "ctx-f9409cc7-e843-4c45-a6f5-54b5a3c15245",
+  "schema_version": "jh:0.3",
+  "producer": "did:vendor:ranking-agent",
+  "created_at": "2026-04-27T17:43:57.102996+00:00",
+  "ttl": "PT30M",
+  "status": "active",
+  "scope": "hiring_ranking",
+  "semantic_payload": [
+    {
+      "interpretations": [
+        {
+          "subject": "cand-0005",
+          "predicate": "tier",
+          "object": "advance",
+          "confidence": 0.85
+        },
+        {
+          "subject": "cand-0003",
+          "predicate": "tier",
+          "object": "hold",
+          "confidence": 0.85
+        },
+        {
+          "subject": "cand-0004",
+          "predicate": "tier",
+          "object": "hold",
+          "confidence": 0.85
+        },
+        {
+          "subject": "cand-0002",
+          "predicate": "tier",
+          "object": "decline",
+          "confidence": 0.85
+        },
+        {
+          "subject": "cand-0001",
+          "predicate": "tier",
+          "object": "decline",
+          "confidence": 0.85
+        }
+      ]
+    }
+  ],
+  "artifacts_registry": [
+    {
+      "artifact_id": "art-tiered-shortlist",
+      "type": "semantic_extraction",
+      "content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "timestamp": "2026-04-27T17:43:57.103018+00:00",
+      "deterministic": false,
+      "metadata": {}
+    }
+  ],
+  "decision_influence": [
+    {
+      "agent": "ranking-agent",
+      "categories": [
+        "screening_rank",
+        "interview_competency"
+      ],
+      "abstraction_level": "situation",
+      "temporal_scope": "current",
+      "influence_weights": {},
+      "confidence": 0.0
+    }
+  ],
+  "privacy": {
+    "data_category": "behavioral",
+    "legal_basis": "consent",
+    "retention": "P7D",
+    "storage_policy": "centralized-encrypted",
+    "feature_suppression": [],
+    "pii_detached": false
+  },
+  "compliance": {
+    "risk_level": "high",
+    "human_oversight_required": true,
+    "forwarding_policy": "semantic_forward"
+  },
+  "provenance_ref": {},
+  "proof": {
+    "canonicalization": "URDNA2015",
+    "content_hash": "cb126a5e3a62777673a837fef64433cdb18f23d6ed93f27f96aff071cc82841a",
+    "signature": "vkCdxpFwXdEedUBb-3gemW3VcfKei0x48DPuv5dTFQLeYlI0LN759n7bQaEtoi66hleVUlB7Hwpo2_zgRUltCw==",
+    "signer": "did:vendor:ranking-agent"
+  }
+}

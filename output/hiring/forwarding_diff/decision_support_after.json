@@ -1,0 +1,16 @@
+{
+  "semantic_payload": [
+    {
+      "applications": [
+        {
+          "subject": "cand-0005",
+          "predicate": "recommend",
+          "object": {
+            "tier": "advance",
+            "rationale": "Strong skills_overlap + tenure_pattern under the rubric weights (0.31 + 0.18)."
+          }
+        }
+      ]
+    }
+  ]
+}
